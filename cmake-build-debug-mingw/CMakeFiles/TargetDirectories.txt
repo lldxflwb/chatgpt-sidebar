@@ -1,9 +1,0 @@
-C:/Users/48449/Desktop/QTProject/chatgpt-sidebar/cmake-build-debug-mingw/CMakeFiles/chatgpt-sidebar.dir
-C:/Users/48449/Desktop/QTProject/chatgpt-sidebar/cmake-build-debug-mingw/CMakeFiles/edit_cache.dir
-C:/Users/48449/Desktop/QTProject/chatgpt-sidebar/cmake-build-debug-mingw/CMakeFiles/rebuild_cache.dir
-C:/Users/48449/Desktop/QTProject/chatgpt-sidebar/cmake-build-debug-mingw/CMakeFiles/list_install_components.dir
-C:/Users/48449/Desktop/QTProject/chatgpt-sidebar/cmake-build-debug-mingw/CMakeFiles/install.dir
-C:/Users/48449/Desktop/QTProject/chatgpt-sidebar/cmake-build-debug-mingw/CMakeFiles/install/local.dir
-C:/Users/48449/Desktop/QTProject/chatgpt-sidebar/cmake-build-debug-mingw/CMakeFiles/install/strip.dir
-C:/Users/48449/Desktop/QTProject/chatgpt-sidebar/cmake-build-debug-mingw/CMakeFiles/chatgpt-sidebar_autogen_timestamp_deps.dir
-C:/Users/48449/Desktop/QTProject/chatgpt-sidebar/cmake-build-debug-mingw/CMakeFiles/chatgpt-sidebar_autogen.dir
