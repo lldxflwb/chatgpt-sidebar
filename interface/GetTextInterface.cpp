@@ -3,3 +3,11 @@
 //
 
 #include "GetTextInterface.h"
+
+
+GetTextInterface::GetTextInterface() :GetTextInterface(UseMode::DefaultMode,""){
+}
+
+GetTextInterface::GetTextInterface(GetTextInterface::UseMode mode, const QString &text) : mode(mode), text(text) {
+
+}
