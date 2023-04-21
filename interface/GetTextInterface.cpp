@@ -3,6 +3,7 @@
 //
 
 #include "GetTextInterface.h"
+#include <QDebug>
 
 
 GetTextInterface::GetTextInterface() :GetTextInterface(UseMode::DefaultMode,""){
@@ -27,5 +28,26 @@ void GetTextInterface::ChangeMode(GetTextInterface::UseMode mode_) {
     }
     if (UseMode::DefaultMode == mode_){
         installMouseHook();
+    }
+}
+
+void GetTextInterface::installMouseHook()
+{
+    if (!mouseHook)
+    {
+        mouseHook = SetWindowsHookEx(WH_MOUSE_LL, mouseProc, GetModuleHandle(nullptr), 0);
+        if (!mouseHook)
+        {
+            qWarning() << "无法安装鼠标钩子";
+        }
+    }
+}
+
+void GetTextInterface::uninstallMouseHook()
+{
+    if (mouseHook)
+    {
+        UnhookWindowsHookEx(mouseHook);
+        mouseHook = nullptr;
     }
 }
