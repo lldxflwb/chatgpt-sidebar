@@ -20,8 +20,11 @@ public:
 
     GetTextInterface(UseMode mode, const QString &text);
 
+    virtual ~GetTextInterface();
+
     GetTextInterface();
 
+    void ChangeMode(UseMode mode);
 private:
     static LRESULT CALLBACK mouseProc(int nCode, WPARAM wParam, LPARAM lParam);
     static HHOOK mouseHook;
