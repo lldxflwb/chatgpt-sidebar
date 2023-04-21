@@ -1,0 +1,14 @@
+//
+// Created by 48449 on 2023/4/21.
+//
+
+#ifndef CHATGPT_SIDEBAR_GETTEXTINTERFACE_H
+#define CHATGPT_SIDEBAR_GETTEXTINTERFACE_H
+
+
+class GetTextInterface {
+
+};
+
+
+#endif //CHATGPT_SIDEBAR_GETTEXTINTERFACE_H

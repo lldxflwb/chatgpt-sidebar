@@ -23,7 +23,7 @@ set(PROJECT_SOURCES
         DealChatGpt.cpp
         DealChatGpt.h
         utils/settingsdialog.ui
-        utils/settingsdialog.cpp)
+        utils/settingsdialog.cpp interface/SettingInterface.cpp interface/SettingInterface.h interface/ChatInterface.cpp interface/ChatInterface.h interface/GetTextInterface.cpp interface/GetTextInterface.h)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(chatgpt-sidebar
