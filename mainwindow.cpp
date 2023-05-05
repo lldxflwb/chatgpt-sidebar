@@ -14,7 +14,6 @@
 #include <QJsonArray>
 #include <QSettings >
 #include <QMouseEvent>
-HHOOK MainWindow::mouseHook = nullptr;
 MainWindow* MainWindow::instance = nullptr;
 
 MainWindow::MainWindow(QWidget *parent)
@@ -30,7 +29,6 @@ MainWindow::MainWindow(QWidget *parent)
     m_setting = setting_ui->m_settings;
 //    setting = new QSettings("sidebar.ini", QSettings::IniFormat);
     setWindowTitle("全局鼠标事件监听示例");
-    installMouseHook();
     instance = this;
     this->bar = new LineBar();
     this->bar->talk = this;
@@ -43,7 +41,10 @@ MainWindow::MainWindow(QWidget *parent)
     iconLabel->hide(); // 在初始状态下隐藏图标
     // 连接 clicked 信号到槽函数
     connect(iconLabel, &ClickableLabel::clicked, this, &MainWindow::iconLabelClicked);
+    // 在其他地方连接自定义信号 mySignal() 和槽函数 mySlot()
+    QObject::connect(chat, &ChatgptBase::textChanged, this, &MainWindow::ShowBar);
     setupNetworkManager();
+    ChangeMode(ChatgptBase::UseMode::CCMode);
 }
 // 槽函数：当 iconLabel 被点击时调用
 void MainWindow::iconLabelClicked()
@@ -62,93 +63,8 @@ MainWindow* MainWindow::getInstance()
 MainWindow::~MainWindow()
 {
     delete ui;
-        uninstallMouseHook();
 }
 
-
-void MainWindow::installMouseHook()
-{
-    if (!mouseHook)
-    {
-        mouseHook = SetWindowsHookEx(WH_MOUSE_LL, mouseProc, GetModuleHandle(nullptr), 0);
-        if (!mouseHook)
-        {
-            qWarning() << "无法安装鼠标钩子";
-        }
-    }
-}
-
-void MainWindow::uninstallMouseHook()
-{
-    if (mouseHook)
-    {
-        UnhookWindowsHookEx(mouseHook);
-        mouseHook = nullptr;
-    }
-}
-QMimeData* MainWindow::cloneMimeData(const QMimeData* original)
-{
-    QMimeData* cloned = new QMimeData();
-    for (const QString& format : original->formats())
-    {
-        cloned->setData(format, original->data(format));
-    }
-    return cloned;
-}
-
-LRESULT CALLBACK MainWindow::mouseProc(int nCode, WPARAM wParam, LPARAM lParam)
-{
-    if (nCode == HC_ACTION)
-    {
-        switch (wParam)
-        {
-            case WM_LBUTTONUP:
-            {
-            if(MainWindow::getInstance()->clicked_button){
-                MainWindow::getInstance()->clicked_button = false;
-                return CallNextHookEx(mouseHook, nCode, wParam, lParam);;
-            }
-                qDebug() << "鼠标左键释放";
-                // 备份剪贴板内容
-                QClipboard* clipboard = QApplication::clipboard();
-                const QMimeData* oldMimeData = clipboard->mimeData();
-                std::unique_ptr<QMimeData> mimeDataBackup(oldMimeData ? cloneMimeData(oldMimeData) : nullptr);
-
-                // 发送 Ctrl+C（复制）按键事件
-                keybd_event(VK_CONTROL, 0, 0, 0);
-                keybd_event('C', 0, 0, 0);
-                keybd_event('C', 0, KEYEVENTF_KEYUP, 0);
-                keybd_event(VK_CONTROL, 0, KEYEVENTF_KEYUP, 0);
-
-                // 延迟检查剪贴板以确保选中的文本已被复制
-                QTimer::singleShot(100, [mimeDataBackup=std::move(mimeDataBackup),clipboard]() mutable
-                {
-                    // 比较剪贴板的当前内容与备份内容
-                    const QMimeData* newMimeData = clipboard->mimeData();
-                    if (newMimeData && (!mimeDataBackup || !newMimeData->data(QStringLiteral("text/plain")).isEmpty()) && newMimeData->text() != mimeDataBackup->text())
-                    {
-                        auto text =  newMimeData->text();
-                        qDebug() << "选中的文本:" << text;
-                        // 创建图标
-                        // 显示图标
-                        MainWindow::getInstance()->bar->aim_text = text;
-
-                        // 显示 MainWindow
-                        MainWindow::getInstance()->bar->show();
-                        // 移动 MainWindow 到响应位置
-                        QPoint cursorPos = QCursor::pos();
-                        MainWindow::getInstance()->bar->move(cursorPos + QPoint(10, 10));
-                        // 使用备份数据恢复剪贴板
-                        clipboard->setMimeData(mimeDataBackup.release());
-                    }
-                });
-            }
-            break;
-        }
-    }
-
-    return CallNextHookEx(mouseHook, nCode, wParam, lParam);
-}
 
 
 
@@ -297,4 +213,16 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event)
         unsetCursor();
         event->accept();
     }
+}
+
+void MainWindow::ShowBar(const QString &newText) {
+    qDebug() << "选中的文本:" << newText;
+    // 创建图标
+    // 显示图标
+    MainWindow::getInstance()->bar->aim_text = newText;
+    // 显示 MainWindow
+    MainWindow::getInstance()->bar->show();
+    // 移动 MainWindow 到响应位置
+    QPoint cursorPos = QCursor::pos();
+    MainWindow::getInstance()->bar->move(cursorPos + QPoint(10, 10));
 }

@@ -8,7 +8,8 @@
 #include <QNetworkAccessManager>
 #include <QNetworkProxy>
 #include <QSettings>
-class DealChatGpt {
+#include "interface/GetTextInterface.h"
+class DealChatGpt : public GetTextInterface{
 public:
     DealChatGpt();
     QTextEdit * out;

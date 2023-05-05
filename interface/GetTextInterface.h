@@ -5,32 +5,33 @@
 #ifndef CHATGPT_SIDEBAR_GETTEXTINTERFACE_H
 #define CHATGPT_SIDEBAR_GETTEXTINTERFACE_H
 
+#include "../Base/ChatgptBase.h"
 #include <Windows.h>
 #include <QString>
+#include <QMimeData>
 
 class GetTextInterface {
 public:
-    enum UseMode{
-        DefaultMode,//默认选项，划词，直接托管剪贴板，查询是否有选中文本，有则浮现linebar
-        CCMode ,//按下ctrl c，即进行复制操作后，获取剪贴板第一条，并在鼠标旁复习linebar
-        DefinedKeyMode , //按下自定义按键后，直接托管剪切版，查询是否有选中文本，有则浮现linebar
-    };
-    UseMode mode ;
-    QString text;
+    ChatgptBase * chat;
 
-    GetTextInterface(UseMode mode, const QString &text);
+    GetTextInterface(ChatgptBase::UseMode mode, const QString &text);
 
     virtual ~GetTextInterface();
 
     GetTextInterface();
 
-    void ChangeMode(UseMode mode);
-private:
+    void ChangeMode(ChatgptBase::UseMode mode_);
+//    virtual void ShowBar() = 0;
     static LRESULT CALLBACK mouseProc(int nCode, WPARAM wParam, LPARAM lParam);
-    static HHOOK mouseHook;
-private:
+    static QMimeData* cloneMimeData(const QMimeData* original);
+    static LRESULT CALLBACK HookProc(int code, WPARAM wParam, LPARAM lParam);
+
     void installMouseHook();
     void uninstallMouseHook();
+
+    void installKeyboardHook();
+
+    void uninstallKeyboardHook();
 };
 
 

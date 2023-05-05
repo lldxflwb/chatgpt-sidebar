@@ -26,9 +26,7 @@ public:
     LineBar * bar;
     QString cache_text;
     SettingsDialog * setting_ui;
-private:
-    void installMouseHook();
-    void uninstallMouseHook();
+
 public slots:
     void iconLabelClicked();
 
@@ -45,11 +43,9 @@ private slots:
     void showSetting() override;
 
 public slots:
- void handleApiResponse();
+    void handleApiResponse();
+    void ShowBar(const QString& newText);
 private:
-    static LRESULT CALLBACK mouseProc(int nCode, WPARAM wParam, LPARAM lParam);
-    static HHOOK mouseHook;
-    static QMimeData* cloneMimeData(const QMimeData* original);
     static MainWindow* instance;
 protected:
     void mousePressEvent(QMouseEvent *event) override;
