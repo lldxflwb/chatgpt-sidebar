@@ -134,15 +134,15 @@ LRESULT CALLBACK GetTextInterface::HookProc(int code, WPARAM wParam, LPARAM lPar
 
                 // 判断剪贴板中是否有文本数据
                 if (!clipboard->mimeData()->hasText()) {
-                    qDebug() << "No text data in clipboard!";
-                    return -1;
+//                    qDebug() << "No text data in clipboard!";
+                    return ;
                 }
 
                 // 获取剪贴板中的文本数据
                 QString text = clipboard->mimeData()->text();
 
                 // 输出剪切板文本内容
-                qDebug() << "Clipboard text: " << text;
+//                qDebug() << "Clipboard text: " << text;
                 chat->text = text;
                 emit chat->textChanged(text);
             });
@@ -150,7 +150,7 @@ LRESULT CALLBACK GetTextInterface::HookProc(int code, WPARAM wParam, LPARAM lPar
     }
 
     // 将消息传递给下一个钩子
-    return CallNextHookEx(nullptr, code, wParam, lParam);
+    return CallNextHookEx(ChatgptBase::getInstance()->keyboardHook, code, wParam, lParam);
 }
 
 void GetTextInterface::installKeyboardHook() {
