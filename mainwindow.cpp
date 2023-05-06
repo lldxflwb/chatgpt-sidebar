@@ -227,4 +227,9 @@ void MainWindow::ShowBar(const QString &newText) {
     // 移动 MainWindow 到响应位置
     QPoint cursorPos = QCursor::pos();
     MainWindow::getInstance()->bar->move(cursorPos + QPoint(10, 10));
+    // 延迟检查剪贴板以确保选中的文本已被复制
+    QTimer::singleShot(1000*10, [this]()
+    {
+        this->bar->hide();
+    });
 }
