@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>408</width>
+    <width>508</width>
     <height>36</height>
    </rect>
   </property>
@@ -18,29 +18,22 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>395</width>
+     <width>495</width>
      <height>31</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <widget class="QPushButton" name="translate_button">
-      <property name="text">
-       <string>翻译</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QPushButton" name="talk_code">
-      <property name="text">
-       <string>解释代码</string>
-      </property>
-     </widget>
-    </item>
-    <item>
      <widget class="QPushButton" name="setting_button">
       <property name="text">
        <string>设置</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="hide_button">
+      <property name="text">
+       <string>隐藏</string>
       </property>
      </widget>
     </item>

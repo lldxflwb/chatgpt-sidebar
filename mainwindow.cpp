@@ -31,6 +31,8 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowTitle("全局鼠标事件监听示例");
     instance = this;
     this->bar = new LineBar();
+    this->bar->settings_dialog= setting_ui;
+    this->bar->InitButton();
     this->bar->talk = this;
     this->out = ui->out_put_text_2;
     // 设置窗口标志，使其成为顶层窗口

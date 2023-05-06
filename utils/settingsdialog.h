@@ -9,7 +9,21 @@
 namespace Ui {
 class SettingsDialog;
 }
-
+class ButtonNode{
+public:
+    QPushButton * button;
+    QString prompt;
+    QString name;
+public:
+    ButtonNode(const QString &prompt, const QString &name , QWidget *parent);
+    ButtonNode(const QString &prompt, const QString &name );
+};
+class ButtonList{
+public:
+    std::vector<ButtonNode> list_buttons;
+    void SaveToSettings(QSettings * settings);
+    void ReadFromSettings(QSettings * settings);
+};
 class SettingsDialog : public QDialog
 {
     Q_OBJECT
@@ -22,6 +36,7 @@ public:
     ~SettingsDialog();
     QSettings *m_settings;
     std::map<QString,QLineEdit*> * edit_info;
+    ButtonList * button_list;
 private:
     Ui::SettingsDialog *ui;
 };
