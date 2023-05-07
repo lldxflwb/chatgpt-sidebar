@@ -124,7 +124,7 @@ void MainWindow::handleApiResponse() {
         QString line = stream.readLine();
         if (line.startsWith("data:")) {
             QString jsonStr = line.mid(5);
-            qDebug() << "one line:" << jsonStr;
+//            qDebug() << "one line:" << jsonStr;
 
             // 将 JSON 字符串转换为 QJsonDocument
             QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonStr.toUtf8());
@@ -138,10 +138,10 @@ void MainWindow::handleApiResponse() {
                 qint64 created = jsonObject["created"].toDouble();
                 QString model = jsonObject["model"].toString();
 
-                qDebug() << "id:" << id;
-                qDebug() << "object:" << object;
-                qDebug() << "created:" << created;
-                qDebug() << "model:" << model;
+//                qDebug() << "id:" << id;
+//                qDebug() << "object:" << object;
+//                qDebug() << "created:" << created;
+//                qDebug() << "model:" << model;
 
                 QJsonArray choicesArray = jsonObject["choices"].toArray();
 
@@ -159,10 +159,11 @@ void MainWindow::handleApiResponse() {
                     MainWindow::getInstance()->ui->out_put_text_2->setText(MainWindow::getInstance()->cache_text);
 //                    MainWindow::getInstance()->ui->out_put_text_2->insertPlainText(content);
                     MainWindow::getInstance()->ui->out_put_text_2->moveCursor(QTextCursor::End);
-                    qDebug() << "role:" << role;
-                    qDebug() << "content:" << content;
-                    qDebug() << "index:" << index;
-                    qDebug() << "finish_reason:" << finishReason;
+                    qDebug()<<content;
+//                    qDebug() << "role:" << role;
+//                    qDebug() << "content:" << content;
+//                    qDebug() << "index:" << index;
+//                    qDebug() << "finish_reason:" << finishReason;
                 }
             }
         }
