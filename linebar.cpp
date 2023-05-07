@@ -21,14 +21,6 @@ void LineBar::on_close_button_clicked() {
     exit(0);
 }
 
-void LineBar::on_talk_code_clicked() {
-    this->talk->TalkWithGpt("请你用中文帮我解释该代码:"+this->aim_text,this->talk->out);
-}
-
-void LineBar::on_translate_button_clicked() {
-    this->talk->TalkWithGpt("请你将以下内容翻译为中文，其中术语可能偏向于计算机行业:"+this->aim_text,this->talk->out);
-}
-
 void LineBar::on_setting_button_clicked() {
     this->talk->showSetting();
 }
@@ -58,10 +50,13 @@ void LineBar::InitButton() {
 
 void LineBar::RemoveButton(ButtonNode *node) {
     QHBoxLayout *layout = ui->horizontalLayout;
+    if (node->button== nullptr){
+        return;
+    }
     layout->removeWidget(node->button);
+    QObject::disconnect(node->button, &QPushButton::clicked, this, nullptr);
     delete node->button;
     node->button = nullptr;
-    QObject::disconnect(node->button, &QPushButton::clicked, this, nullptr);
 }
 
 void LineBar::SettingChanged(QSettings *setting) {

@@ -28,6 +28,7 @@ public:
     void ReadFromSettings(QSettings * settings);
 };
 class ButtonSettingBorad : public QVBoxLayout{
+Q_OBJECT
 public:
     class ButtonSettingPair : public QHBoxLayout{
     public:
@@ -40,6 +41,7 @@ public:
 
         QLineEdit * name;
         QLineEdit * content;
+        QPushButton * delete_button;
     };
     explicit ButtonSettingBorad(QWidget *parent);
     QVBoxLayout * box;
@@ -47,6 +49,9 @@ public:
     void ReloadSetting(ButtonList * list);
 
     ~ButtonSettingBorad() override;
+public:
+signals:
+    void DeletePrompt(QString name,QString prompt);
 };
 class SettingsDialog : public QDialog
 {

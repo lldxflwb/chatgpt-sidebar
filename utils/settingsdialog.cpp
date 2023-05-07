@@ -43,6 +43,24 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     button_setting_broad = new ButtonSettingBorad(parent);
     ui->verticalLayout->addLayout(button_setting_broad);
     button_setting_broad->ReloadSetting(button_list);
+    connect(button_setting_broad,&ButtonSettingBorad::DeletePrompt,[this](QString name,QString prompt){
+        std::vector<ButtonNode> new_list;
+        for (auto & item : button_list->list_buttons)  {
+            if (item.prompt == prompt && item.name == name){
+                continue;
+            }
+            new_list.push_back(item);
+        }
+        button_list->list_buttons = new_list;
+        if (new_list.size()==0){
+            button_list->list_buttons.push_back(ButtonNode("提示语","名称"));
+        }
+        this->button_setting_broad->ReloadSetting(button_list);
+    });
+    connect(button_setting_broad->add_button,&QPushButton::clicked,[this](bool clicked = false){
+        button_list->list_buttons.push_back(ButtonNode("提示语","名称"));
+        this->button_setting_broad->ReloadSetting(button_list);
+    });
 }
 
 SettingsDialog::~SettingsDialog()
@@ -72,16 +90,34 @@ ButtonNode::ButtonNode(const QString &prompt, const QString &name) : prompt(prom
 }
 
 void ButtonList::SaveToSettings(QSettings *settings) {
-    settings->setValue("btns",list_buttons.size());
+    int cnt = 0 ;
+    int last_cnt = settings->value("btns").toInt();
     for (int i = 0; i < list_buttons.size(); ++i) {
         auto & btn = list_buttons[i];
+        if (btn.name=="名称"||btn.prompt=="提示语"){
+            qDebug() << "存在无效按钮";
+            cnt ++ ;
+            continue;
+        }
         {
-            QString key_name = QString("btn.prompt.%1").arg(i);
+            QString key_name = QString("btn.prompt.%1").arg(i-cnt);
             settings->setValue(key_name,btn.prompt);
         }
         {
-            QString key_name = QString("btn.name.%1").arg(i);
+            QString key_name = QString("btn.name.%1").arg(i-cnt);
             settings->setValue(key_name,btn.name);
+        }
+    }
+    settings->setValue("btns",list_buttons.size() - cnt);
+    qDebug() << "cnts:" << cnt << ",last : " << last_cnt << " , all : " << list_buttons.size();
+    for (int i = list_buttons.size() - cnt; i < list_buttons.size() || i < last_cnt; ++i) {
+        {
+            QString key_name = QString("btn.prompt.%1").arg(i);
+            settings->remove(key_name);
+        }
+        {
+            QString key_name = QString("btn.name.%1").arg(i);
+            settings->remove(key_name);
         }
     }
 }
@@ -110,9 +146,9 @@ void ButtonList::ReadFromSettings(QSettings *settings) {
 
 ButtonSettingBorad::ButtonSettingPair::ButtonSettingPair(QWidget *parent, const QString &labelText, const QString &prompt)
         : QHBoxLayout(parent), label_text(labelText), prompt(prompt) {
-    auto * button = new QPushButton("-");
-    button->setMaximumSize(25,25);
-    this->addWidget(button);
+    delete_button = new QPushButton("-");
+    delete_button->setMaximumSize(25,25);
+    this->addWidget(delete_button);
     name = new QLineEdit(parent);
     name->setText(labelText);
     name->setMaximumWidth(50);
@@ -131,6 +167,10 @@ ButtonSettingBorad::ButtonSettingPair::~ButtonSettingPair() {
     if (name != nullptr){
         delete name;
         name = nullptr;
+    }
+    if (delete_button != nullptr){
+        delete delete_button;
+        delete_button = nullptr;
     }
 }
 
@@ -165,6 +205,15 @@ void ButtonSettingBorad::ReloadSetting(ButtonList *list) {
     }
     for (auto & item : list->list_buttons) {
         auto * line = new ButtonSettingPair(nullptr,item.name,item.prompt);
+        connect(line->delete_button,&QPushButton::clicked,[name=item.name,prompt=item.prompt, this](bool clicked = false){
+            emit DeletePrompt(name,prompt);
+        });
+        connect(line->name,&QLineEdit::textChanged,[&item](const QString text){
+            item.name = text;
+        });
+        connect(line->content,&QLineEdit::textChanged,[&item](const QString text){
+            item.prompt = text;
+        });
         box->addLayout(line);
     }
 }

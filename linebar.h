@@ -27,8 +27,6 @@ public:
 private slots:
     void on_close_button_clicked();
     void on_hide_button_clicked();
-    void on_talk_code_clicked();
-    void on_translate_button_clicked();
     void on_setting_button_clicked();
     void SettingChanged(QSettings * setting);
 private:
