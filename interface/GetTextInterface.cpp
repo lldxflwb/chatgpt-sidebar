@@ -5,7 +5,6 @@
 #include "GetTextInterface.h"
 #include <QDebug>
 #include <QApplication>
-#include <QDebug>
 #include <QClipboard>
 #include <QTimer>
 GetTextInterface::GetTextInterface() :GetTextInterface(ChatgptBase::UseMode::DefaultMode,""){

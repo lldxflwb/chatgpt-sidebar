@@ -52,6 +52,7 @@ void SettingsDialog::on_save_button_clicked() {
     for (auto & item : (*this->edit_info)) {
         m_settings->setValue(item.first,item.second->text());
     }
+    this->button_list->SaveToSettings(this->m_settings);
     m_settings->sync();
     this->hide();
 }

@@ -53,6 +53,26 @@ void LineBar::InitButton() {
     for (auto & item : settings_dialog->button_list->list_buttons) {
         AddButton(&item);
     }
+    QObject::connect( settings_dialog, &SettingsDialog::SettingChangedSend, this, &LineBar::SettingChanged);
+}
+
+void LineBar::RemoveButton(ButtonNode *node) {
+    QHBoxLayout *layout = ui->horizontalLayout;
+    layout->removeWidget(node->button);
+    delete node->button;
+    node->button = nullptr;
+    QObject::disconnect(node->button, &QPushButton::clicked, this, nullptr);
+}
+
+void LineBar::SettingChanged(QSettings *setting) {
+    for (auto & item : settings_dialog->button_list->list_buttons) {
+        RemoveButton(&item);
+    }
+    settings_dialog->button_list->list_buttons.clear();
+    settings_dialog->button_list->ReadFromSettings(setting);
+    for (auto & item : settings_dialog->button_list->list_buttons) {
+        AddButton(&item);
+    }
 }
 
 

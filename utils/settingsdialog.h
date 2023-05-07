@@ -31,6 +31,10 @@ private slots:
 
     void on_close_button_clicked();
     void on_save_button_clicked();
+
+public:
+signals:
+    void SettingChangedSend(QSettings * settings);
 public:
     explicit SettingsDialog(QWidget *parent = nullptr);
     ~SettingsDialog();
