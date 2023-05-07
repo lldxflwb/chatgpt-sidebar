@@ -10,6 +10,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 {
     m_settings = new QSettings("sidebar.ini", QSettings::IniFormat);
     ui->setupUi(this);
+    ui->verticalLayout->addSpacing(10);
 
     // ip set
     auto * edit_ip = new QLineEdit("",this);
@@ -34,7 +35,8 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
         edit_key->setText( m_settings->value("key","").toString() );
     }
     ui->formLayout->addRow("key",edit_key);
-
+    ui->formLayout->setSizeConstraint(QLayout::SizeConstraint::SetMinimumSize);
+    ui->verticalLayout->setSizeConstraint(QLayout::SizeConstraint::SetMinimumSize);
     // add prompt setting
     button_list = new ButtonList();
     button_list->ReadFromSettings(m_settings);
@@ -108,12 +110,17 @@ void ButtonList::ReadFromSettings(QSettings *settings) {
 
 ButtonSettingBorad::ButtonSettingPair::ButtonSettingPair(QWidget *parent, const QString &labelText, const QString &prompt)
         : QHBoxLayout(parent), label_text(labelText), prompt(prompt) {
-    name = new QLabel(parent);
+    auto * button = new QPushButton("-");
+    button->setMaximumSize(25,25);
+    this->addWidget(button);
+    name = new QLineEdit(parent);
     name->setText(labelText);
+    name->setMaximumWidth(50);
     this->addWidget(name);
     content = new QLineEdit(parent);
     content->setText(prompt);
     this->addWidget(content);
+    this->addSpacing(10);
 }
 
 ButtonSettingBorad::ButtonSettingPair::~ButtonSettingPair() {
@@ -130,6 +137,9 @@ ButtonSettingBorad::ButtonSettingPair::~ButtonSettingPair() {
 ButtonSettingBorad::ButtonSettingBorad(QWidget *parent) : QVBoxLayout(parent) {
     box = new QVBoxLayout(parent);
     add_button = new QPushButton("添加prompt",parent);
+    this->addSpacing(10);
+    this->addLayout(box);
+    this->addWidget(add_button);
 }
 
 ButtonSettingBorad::~ButtonSettingBorad() {
@@ -157,6 +167,4 @@ void ButtonSettingBorad::ReloadSetting(ButtonList *list) {
         auto * line = new ButtonSettingPair(nullptr,item.name,item.prompt);
         box->addLayout(line);
     }
-    this->addLayout(box);
-    this->addWidget(add_button);
 }

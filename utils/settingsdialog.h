@@ -38,7 +38,7 @@ public:
 
         ~ButtonSettingPair() override;
 
-        QLabel * name;
+        QLineEdit * name;
         QLineEdit * content;
     };
     explicit ButtonSettingBorad(QWidget *parent);
