@@ -54,6 +54,7 @@ void SettingsDialog::on_save_button_clicked() {
     }
     this->button_list->SaveToSettings(this->m_settings);
     m_settings->sync();
+    emit SettingChangedSend(m_settings);
     this->hide();
 }
 ButtonNode::ButtonNode(const QString &prompt, const QString &name, QWidget *parent): prompt(prompt), name(name) {
