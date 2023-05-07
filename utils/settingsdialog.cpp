@@ -35,8 +35,12 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     }
     ui->formLayout->addRow("key",edit_key);
 
+    // add prompt setting
     button_list = new ButtonList();
     button_list->ReadFromSettings(m_settings);
+    button_setting_broad = new ButtonSettingBorad(parent);
+    ui->verticalLayout->addLayout(button_setting_broad);
+    button_setting_broad->ReloadSetting(button_list);
 }
 
 SettingsDialog::~SettingsDialog()
@@ -100,4 +104,59 @@ void ButtonList::ReadFromSettings(QSettings *settings) {
             }
         }
     }
+}
+
+ButtonSettingBorad::ButtonSettingPair::ButtonSettingPair(QWidget *parent, const QString &labelText, const QString &prompt)
+        : QHBoxLayout(parent), label_text(labelText), prompt(prompt) {
+    name = new QLabel(parent);
+    name->setText(labelText);
+    this->addWidget(name);
+    content = new QLineEdit(parent);
+    content->setText(prompt);
+    this->addWidget(content);
+}
+
+ButtonSettingBorad::ButtonSettingPair::~ButtonSettingPair() {
+    if (content != nullptr){
+        delete content;
+        content= nullptr;
+    }
+    if (name != nullptr){
+        delete name;
+        name = nullptr;
+    }
+}
+
+ButtonSettingBorad::ButtonSettingBorad(QWidget *parent) : QVBoxLayout(parent) {
+    box = new QVBoxLayout(parent);
+    add_button = new QPushButton("添加prompt",parent);
+}
+
+ButtonSettingBorad::~ButtonSettingBorad() {
+    if (box != nullptr){
+        delete box;
+        box = nullptr;
+    }
+    if (add_button!= nullptr){
+        delete add_button;
+        add_button = nullptr;
+    }
+
+}
+
+void ButtonSettingBorad::ReloadSetting(ButtonList *list) {
+    if (list== nullptr){
+        return;
+    }
+    QLayoutItem *child;
+    while ((child = box->takeAt(0)) != nullptr) {
+        delete child->widget();
+        delete child;
+    }
+    for (auto & item : list->list_buttons) {
+        auto * line = new ButtonSettingPair(nullptr,item.name,item.prompt);
+        box->addLayout(line);
+    }
+    this->addLayout(box);
+    this->addWidget(add_button);
 }
