@@ -28,3 +28,13 @@ void DealChatGpt::setupNetworkManager(QObject *parent ) {
     qDebug() << "代理初始化";
 }
 
+void DealChatGpt::OnSettingChanged(QSettings *settings) {
+    // 设置代理
+    QNetworkProxy proxy;
+    proxy.setType(QNetworkProxy::Socks5Proxy);
+    proxy.setHostName(m_setting->value("ip").toString());
+    proxy.setPort(m_setting->value("port").toString().toInt());
+    QNetworkProxy::setApplicationProxy(proxy);
+    qDebug() << "重设代理";
+}
+

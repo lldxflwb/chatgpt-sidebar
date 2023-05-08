@@ -21,6 +21,9 @@ public:
     void setupNetworkManager(QObject *parent = nullptr);
     virtual void fetchAnswerFromGPT3(const QString& text) = 0;
     virtual void showSetting() = 0;
+
+public:
+    void OnSettingChanged(QSettings * settings);
 };
 
 

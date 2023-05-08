@@ -47,6 +47,9 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(chat, &ChatgptBase::textChanged, this, &MainWindow::ShowBar);
     setupNetworkManager();
     ChangeMode(ChatgptBase::UseMode::CCMode);
+    connect(setting_ui,&SettingsDialog::SettingChangedSend,[this](QSettings * settings){
+        this->OnSettingChanged(settings);
+    });
 }
 // 槽函数：当 iconLabel 被点击时调用
 void MainWindow::iconLabelClicked()
