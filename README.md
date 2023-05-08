@@ -42,7 +42,13 @@
 
 ## ip port
 
+### v2rayN 
+
 ![代理](./src/proxy.png)
+
+### clash
+
+![clash](./src/proxy_clash.png)
 
 正常我们使用v2rayN进行代理，在本机上ip则填`127.0.0.1`，端口则填如箭头所指`10808`
 
