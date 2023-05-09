@@ -1,6 +1,7 @@
 # This file is used to ignore files which are generated
 # ----------------------------------------------------------------------------
-
+cmake-build-debug
+cmake-build-release
 *~
 *.autosave
 *.a

@@ -9,6 +9,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+include_directories(${CMAKE_SOURCE_DIR})
+
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
@@ -23,7 +25,20 @@ set(PROJECT_SOURCES
         DealChatGpt.cpp
         DealChatGpt.h
         utils/settingsdialog.ui
-        utils/settingsdialog.cpp interface/SettingInterface.cpp interface/SettingInterface.h interface/ChatInterface.cpp interface/ChatInterface.h interface/GetTextInterface.cpp interface/GetTextInterface.h Base/ChatgptBase.cpp Base/ChatgptBase.h)
+        utils/settingsdialog.h
+        utils/settingsdialog.cpp
+        buttonsettingborad.h
+        buttonsettingborad.cpp
+        interface/SettingInterface.cpp
+        interface/SettingInterface.h
+        interface/ChatInterface.cpp
+        interface/ChatInterface.h
+        interface/GetTextInterface.cpp
+        interface/GetTextInterface.h
+        Base/ChatgptBase.cpp
+        Base/ChatgptBase.h
+
+    )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(chatgpt-sidebar
