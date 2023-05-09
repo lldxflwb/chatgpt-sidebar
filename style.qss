@@ -1,0 +1,17 @@
+#LineBar{
+    background:rgb(45,45,45);
+}
+#LineBar>QPushButton{
+    color:rgb(255,255,255);
+}
+#LineBar>QPushButton:hover{
+    color:rgb(250,0,0);
+    background-color:rgb(170,170,170);
+    border:1px solid rgb(45,45,45);
+}
+
+#LineBar>QPushButton:pressed{
+    color:rgb(170,170,170);
+    background-color:rgb(45,45,45);
+    border:1px solid rgb(45,45,200);
+}

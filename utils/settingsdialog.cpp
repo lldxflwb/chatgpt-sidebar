@@ -51,7 +51,6 @@ SettingsDialog::SettingsDialog(QWidget *parent)
         if (new_list.size() == 0) {
             button_list->list_buttons.push_back(ButtonNode("提示语", "名称"));
         }
-
         ui->button_setting_broad->ReloadSetting(button_list);
     });
     connect(ui->button_setting_broad->add_button, &QPushButton::clicked, this,
