@@ -24,6 +24,7 @@ void LineBar::AddButton(ButtonNode *node) {
     node->button = new QPushButton(node->name, this);
     node->button->setMaximumWidth(40);
     node->button->setFlat(true);
+    node->button->setToolTip(node->prompt);
     // 将按钮添加到布局中
     ui->horizontalLayout->addWidget(node->button);
     connect(node->button, &QPushButton::clicked, [this, node]() {
