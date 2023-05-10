@@ -40,6 +40,9 @@ SettingsDialog::SettingsDialog(QWidget *parent)
 
     ui->button_setting_broad->ReloadSetting(button_list);
 
+    ui->save_button->setToolTip("保存配置");
+    ui->close_button->setToolTip("隐藏配置界面");
+
     connect(ui->button_setting_broad, &ButtonSettingBorad::DeletePrompt, this,
             [this](QString name, QString prompt) {
         std::vector<ButtonNode> new_list;

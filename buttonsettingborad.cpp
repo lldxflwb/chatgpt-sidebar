@@ -41,6 +41,7 @@ ButtonSettingBorad::ButtonSettingBorad(QWidget *parent) : QWidget(parent) {
     box = new QVBoxLayout;
 
     add_button = new QPushButton("添加prompt", parent);
+    add_button->setToolTip("将会添加一行默认设置，名称和设置都需要更改，如果为默认值则无法被保存");
     this->setLayout(v_layout);
     v_layout->addLayout(box);
     QSpacerItem * sparcer_item = new QSpacerItem(0,160,QSizePolicy::Fixed,QSizePolicy::Expanding);
