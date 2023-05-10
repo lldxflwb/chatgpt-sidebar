@@ -15,18 +15,20 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     if (m_settings->value("ip", "") != "") {
         ui->edit_ip->setText(m_settings->value("ip", "").toString());
     }
+    ui->edit_ip->setToolTip("请填入代理软件对本地开放的ip,代理应为socks5，如代理软件在本机则为127.0.0.1，非节点ip，具体详情见readme");
 
     // port set
     (*edit_info)[QString("port")] = ui->edit_port;
     if (m_settings->value("port", "") != "") {
         ui->edit_port->setText(m_settings->value("port", "").toString());
     }
-
+    ui->edit_port->setToolTip("请填入代理软件对本地开放的port，代理应为socks5,如是clash默认为7890，如v2rayN则默认为10808，非节点port，具体详情见readme");
     // key set
     (*edit_info)[QString("key")] = ui->edit_key;
     if (m_settings->value("key", "") != "") {
         ui->edit_key->setText(m_settings->value("key", "").toString());
     }
+    ui->edit_key->setToolTip("请填入您的openai的key，且请检查，您的赠送费用是否过期，直达连接见readme");
 
     ui->formLayout->setSizeConstraint(QLayout::SizeConstraint::SetMinimumSize);
     ui->verticalLayout->setSizeConstraint(
