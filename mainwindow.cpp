@@ -18,7 +18,7 @@ MainWindow* MainWindow::instance = nullptr;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow),clicked_button(false)
+    , clicked_button(false),ui(new Ui::MainWindow)
 {
     setting_ui = new SettingsDialog();
     setting_ui->show();
@@ -95,7 +95,6 @@ void MainWindow::fetchAnswerFromGPT3(const QString &text) {
     request.setRawHeader("Authorization", key.toUtf8());
     QJsonObject jsonBody;
     jsonBody["model"] = "gpt-3.5-turbo";
-
     QJsonArray messages;
     QJsonObject message;
     message["role"] = "user";

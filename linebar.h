@@ -31,7 +31,6 @@ private slots:
     void SettingChanged(QSettings * setting);
 private:
     Ui::LineBar *ui;
-
 };
 
 #endif // LINEBAR_H
