@@ -14,12 +14,11 @@
 #include <QJsonArray>
 #include <QSettings >
 #include <QMouseEvent>
-MainWindow* MainWindow::instance = nullptr;
+
+MainWindow *MainWindow::instance = nullptr;
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , clicked_button(false),ui(new Ui::MainWindow)
-{
+        : QMainWindow(parent), clicked_button(false), ui(new Ui::MainWindow) {
     setting_ui = new SettingsDialog();
     setting_ui->show();
     this->hide();
@@ -31,7 +30,7 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowTitle("全局鼠标事件监听示例");
     instance = this;
     this->bar = new LineBar();
-    this->bar->settings_dialog= setting_ui;
+    this->bar->settings_dialog = setting_ui;
     this->bar->InitButton();
     this->bar->talk = this;
     this->out = ui->out_put_text_2;
@@ -47,13 +46,13 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(chat, &ChatgptBase::textChanged, this, &MainWindow::ShowBar);
     setupNetworkManager();
     ChangeMode(ChatgptBase::UseMode::CCMode);
-    connect(setting_ui,&SettingsDialog::SettingChangedSend,[this](QSettings * settings){
+    connect(setting_ui, &SettingsDialog::SettingChangedSend, [this](QSettings *settings) {
         this->OnSettingChanged(settings);
     });
 }
+
 // 槽函数：当 iconLabel 被点击时调用
-void MainWindow::iconLabelClicked()
-{
+void MainWindow::iconLabelClicked() {
     // 显示一个文本窗口
     MainWindow::getInstance()->clicked_button = true;
 //    fetchAnswerFromGPT3(MainWindow::getInstance()->iconLabel->select_text);
@@ -61,20 +60,17 @@ void MainWindow::iconLabelClicked()
     MainWindow::getInstance()->hide();
 //    QMessageBox::information(this, tr("选中的文本"), tr("这里是选中的文本的详细信息。"));
 }
-MainWindow* MainWindow::getInstance()
-{
+
+MainWindow *MainWindow::getInstance() {
     return instance;
 }
-MainWindow::~MainWindow()
-{
+
+MainWindow::~MainWindow() {
     delete ui;
 }
 
 
-
-
-void MainWindow::on_close_button_2_clicked()
-{
+void MainWindow::on_close_button_2_clicked() {
     exit(0);
 }
 
@@ -91,7 +87,7 @@ void MainWindow::fetchAnswerFromGPT3(const QString &text) {
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 //    request.setRawHeader("OpenAI-Organization", "org-czN24sxhQjpKxcATiidkrSzG");
 //    request.setRawHeader("Authorization", "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");
-    auto key = "Bearer "+m_setting->value("key").toString();
+    auto key = "Bearer " + m_setting->value("key").toString();
     request.setRawHeader("Authorization", key.toUtf8());
     QJsonObject jsonBody;
     jsonBody["model"] = "gpt-3.5-turbo";
@@ -104,7 +100,7 @@ void MainWindow::fetchAnswerFromGPT3(const QString &text) {
     jsonBody["stream"] = true;
     QByteArray jsonString = QJsonDocument(jsonBody).toJson();
     // 转换为 QObject* 类型
-    const QObject* receiver = static_cast<const QObject*>(qobject_cast<QObject*>(this));;
+    const QObject *receiver = static_cast<const QObject *>(qobject_cast<QObject *>(this));;
     QNetworkReply *reply = networkManager->post(request, jsonString);
     connect(reply, &QNetworkReply::readyRead, this, &MainWindow::handleApiResponse);
 }
@@ -195,23 +191,20 @@ void MainWindow::handleApiResponse() {
     }
 }
 
-void MainWindow::on_pushButton_clicked()
-{
+void MainWindow::on_pushButton_clicked() {
     this->hide();
 }
 
 
-void MainWindow::on_pushButton_4_clicked()
-{
-setting_ui->show();
+void MainWindow::on_pushButton_4_clicked() {
+    setting_ui->show();
 }
 
 void MainWindow::showSetting() {
     this->setting_ui->show();
 }
 
-void MainWindow::mousePressEvent(QMouseEvent *event)
-{
+void MainWindow::mousePressEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
         // 记录鼠标按下时窗口的位置
         m_dragPos = event->globalPos() - frameGeometry().topLeft();
@@ -223,8 +216,7 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
     }
 }
 
-void MainWindow::mouseMoveEvent(QMouseEvent *event)
-{
+void MainWindow::mouseMoveEvent(QMouseEvent *event) {
     if (m_dragging) {
         // 移动窗口
         move(event->globalPos() - m_dragPos);
@@ -232,8 +224,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
-void MainWindow::mouseReleaseEvent(QMouseEvent *event)
-{
+void MainWindow::mouseReleaseEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton && m_dragging) {
         // 标记为不可拖动
         m_dragging = false;
@@ -254,8 +245,7 @@ void MainWindow::ShowBar(const QString &newText) {
     QPoint cursorPos = QCursor::pos();
     MainWindow::getInstance()->bar->move(cursorPos + QPoint(10, 10));
     // 延迟检查剪贴板以确保选中的文本已被复制
-    QTimer::singleShot(1000*10, [this]()
-    {
+    QTimer::singleShot(1000 * 10, [this]() {
         this->bar->hide();
     });
 }
