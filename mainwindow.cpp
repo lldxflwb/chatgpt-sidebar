@@ -114,16 +114,44 @@ void MainWindow::handleApiResponse() {
 
     // 检查网络错误
     if (reply->error() != QNetworkReply::NoError) {
+        QMessageBox::critical(this, tr("发生错误"), tr("网络错误"), QMessageBox::Discard);
         qDebug() << "Error:" << reply->errorString();
         return;
     }
 
     // 读取响应数据
     QByteArray data = reply->readAll();
+    {
+        // 将 JSON 字符串转换为 QJsonDocument
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
+
+        // 如果 JSON 文档不为空且不是空对象，则进行解析
+        if (!jsonDoc.isNull() && jsonDoc.isObject()) {
+            QJsonObject jsonObject = jsonDoc.object();
+
+            // 检查是否存在 error 对象
+            if (jsonObject.contains("error")) {
+                QJsonObject errorObject = jsonObject["error"].toObject();
+                QString errorMessage = errorObject["message"].toString();
+                QString errorType = errorObject["type"].toString();
+
+                // 在此处处理错误消息和错误类型，例如显示在消息框中
+                QMessageBox::critical(this, tr("发生错误"), errorMessage, QMessageBox::Close);
+            } else {
+//                qDebug() <<"未包含error";
+//                QMessageBox::critical(this, tr("发生错误"), tr("未处理"), QMessageBox::Close);
+            }
+        } else {
+//            qDebug() << "序列化失败";
+//            QMessageBox::critical(this, tr("发生错误"), tr("消息序列化失败"), QMessageBox::Close);
+        }
+    }
+    qDebug() << "111";
     QTextStream stream(data);
 // 解析数据字段
     while (!stream.atEnd()) {
         QString line = stream.readLine();
+        qDebug() << "line:" << line;
         if (line.startsWith("data:")) {
             QString jsonStr = line.mid(5);
 //            qDebug() << "one line:" << jsonStr;
@@ -139,11 +167,6 @@ void MainWindow::handleApiResponse() {
                 QString object = jsonObject["object"].toString();
                 qint64 created = jsonObject["created"].toDouble();
                 QString model = jsonObject["model"].toString();
-
-//                qDebug() << "id:" << id;
-//                qDebug() << "object:" << object;
-//                qDebug() << "created:" << created;
-//                qDebug() << "model:" << model;
 
                 QJsonArray choicesArray = jsonObject["choices"].toArray();
 
@@ -161,13 +184,13 @@ void MainWindow::handleApiResponse() {
                     MainWindow::getInstance()->ui->out_put_text_2->setText(MainWindow::getInstance()->cache_text);
 //                    MainWindow::getInstance()->ui->out_put_text_2->insertPlainText(content);
                     MainWindow::getInstance()->ui->out_put_text_2->moveCursor(QTextCursor::End);
-                    qDebug()<<content;
-//                    qDebug() << "role:" << role;
-//                    qDebug() << "content:" << content;
-//                    qDebug() << "index:" << index;
-//                    qDebug() << "finish_reason:" << finishReason;
+                    qDebug() << content;
                 }
             }
+        } else if (line == "") {
+            continue;
+        } else {
+
         }
     }
 }
