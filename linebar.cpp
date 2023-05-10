@@ -5,6 +5,9 @@ LineBar::LineBar(QWidget *parent) : QDialog(parent), ui(new Ui::LineBar) {
     ui->setupUi(this);
     // 设置窗口标志，使其成为顶层窗口
     setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
+    ui->close_button->setToolTip("退出软件");
+    ui->hide_button->setToolTip("隐藏bar,10s后自动隐藏");
+    ui->setting_button->setToolTip("调出设置界面");
     aim_text = "";
 }
 
