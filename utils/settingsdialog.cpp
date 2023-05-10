@@ -1,3 +1,4 @@
+#include <QMessageBox>
 #include "settingsdialog.h"
 #include "ui_settingsdialog.h"
 
@@ -62,6 +63,9 @@ SettingsDialog::SettingsDialog(QWidget *parent)
             [this](bool clicked = false) {
         if (button_list->list_buttons.size() > MAX_PROMPT) {
             qDebug() << "prompt size must less than" << MAX_PROMPT;
+            static std::string tips = "功能按钮应该小于";
+            tips = tips + std::to_string(MAX_PROMPT);
+            QMessageBox::critical(this,tr("错误"), tr(tips.c_str()),QMessageBox::Close);
             return;
         };
         button_list->list_buttons.push_back(ButtonNode("提示语", "名称"));
