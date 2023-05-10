@@ -6,13 +6,16 @@ ButtonSettingPair::ButtonSettingPair(
     : QHBoxLayout(parent), label_text(labelText), prompt(prompt) {
     delete_button = new QPushButton("-");
     delete_button->setMaximumSize(25, 25);
+    delete_button->setToolTip("删除改行配置");
     this->addWidget(delete_button);
     name = new QLineEdit(parent);
     name->setText(labelText);
     name->setMaximumWidth(50);
+    name->setToolTip("请设置功能按钮名称");
     this->addWidget(name);
     content = new QLineEdit(parent);
     content->setText(prompt);
+    content->setToolTip("请设置提问语，即prompt");
     this->addWidget(content);
     this->addSpacing(10);
 
