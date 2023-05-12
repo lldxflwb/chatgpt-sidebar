@@ -49,6 +49,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(setting_ui, &SettingsDialog::SettingChangedSend, [this](QSettings *settings) {
         this->OnSettingChanged(settings);
     });
+    connect(ui->action_button_2,&QPushButton::clicked,[this](bool checked = false){
+        this->TalkWithGpt(this->ui->i_2->toPlainText(),this->ui->out_put_text_2);
+    });
 }
 
 // 槽函数：当 iconLabel 被点击时调用
