@@ -27,20 +27,6 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
-        <widget class="QPushButton" name="translate_2">
-         <property name="text">
-          <string>翻译</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_3">
-         <property name="text">
-          <string>解释代码</string>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QPushButton" name="pushButton_4">
          <property name="text">
           <string>设置</string>
@@ -115,7 +101,7 @@
      <x>0</x>
      <y>0</y>
      <width>534</width>
-     <height>26</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>
