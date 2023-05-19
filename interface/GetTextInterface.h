@@ -5,8 +5,8 @@
 #ifndef CHATGPT_SIDEBAR_GETTEXTINTERFACE_H
 #define CHATGPT_SIDEBAR_GETTEXTINTERFACE_H
 
-#include "../Base/ChatgptBase.h"
-#include <Windows.h>
+//#include "../Base/ChatgptBase.h"
+#include "Base/ChatgptBase.h"
 #include <QString>
 #include <QMimeData>
 
@@ -22,10 +22,13 @@ public:
 
     void ChangeMode(ChatgptBase::UseMode mode_);
 //    virtual void ShowBar() = 0;
+#if defined(Q_OS_WIN)
     static LRESULT CALLBACK mouseProc(int nCode, WPARAM wParam, LPARAM lParam);
-    static QMimeData* cloneMimeData(const QMimeData* original);
     static LRESULT CALLBACK HookProc(int code, WPARAM wParam, LPARAM lParam);
-
+#elif defined(Q_OS_MACOS)
+    static CGEventRef keyEventHandler(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon);
+#endif
+    static QMimeData* cloneMimeData(const QMimeData* original);
     void installMouseHook();
     void uninstallMouseHook();
 

@@ -12,7 +12,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
-#include <QSettings >
+#include <QSettings>
 #include <QMouseEvent>
 
 MainWindow *MainWindow::instance = nullptr;

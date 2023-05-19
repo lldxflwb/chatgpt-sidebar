@@ -19,11 +19,14 @@ ChatgptBase* ChatgptBase::getInstance() {
 ChatgptBase::ChatgptBase() {
     mode = DefaultMode;
     text = "";
+#if defined(Q_OS_WIN)
     keyboardHook = nullptr;
     mouseHook = nullptr;
+#endif
 }
 
 ChatgptBase::~ChatgptBase() {
+#if defined(Q_OS_WIN)
     // 在析构函数中清理资源
     if (keyboardHook != nullptr) {
         UnhookWindowsHookEx(keyboardHook);
@@ -33,4 +36,5 @@ ChatgptBase::~ChatgptBase() {
     }
     keyboardHook = nullptr;
     mouseHook = nullptr;
+#endif
 }

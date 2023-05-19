@@ -40,6 +40,7 @@ void GetTextInterface::ChangeMode(ChatgptBase::UseMode mode_) {
     chat->mode = mode_;
 }
 
+#if defined(Q_OS_WIN)
 LRESULT CALLBACK GetTextInterface::mouseProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
     ChatgptBase * chat = ChatgptBase::getInstance();
@@ -86,6 +87,7 @@ LRESULT CALLBACK GetTextInterface::mouseProc(int nCode, WPARAM wParam, LPARAM lP
 
     return CallNextHookEx(chat->mouseHook, nCode, wParam, lParam);
 }
+#endif
 
 QMimeData* GetTextInterface::cloneMimeData(const QMimeData* original)
 {
@@ -99,6 +101,7 @@ QMimeData* GetTextInterface::cloneMimeData(const QMimeData* original)
 
 void GetTextInterface::installMouseHook()
 {
+#if defined(Q_OS_WIN)
     if (!chat->mouseHook)
     {
         chat->mouseHook = SetWindowsHookEx(WH_MOUSE_LL, mouseProc, GetModuleHandle(nullptr), 0);
@@ -107,17 +110,22 @@ void GetTextInterface::installMouseHook()
             qWarning() << "无法安装鼠标钩子";
         }
     }
+
+#endif
 }
 
 void GetTextInterface::uninstallMouseHook()
 {
+#if defined(Q_OS_WIN)
     if (chat->mouseHook)
     {
         UnhookWindowsHookEx(chat->mouseHook);
         chat->mouseHook = nullptr;
     }
+#endif
 }
 
+#if defined(Q_OS_WIN)
 // 消息处理函数
 LRESULT CALLBACK GetTextInterface::HookProc(int code, WPARAM wParam, LPARAM lParam) {
     // 判断是否按下 Ctrl+C
@@ -151,8 +159,50 @@ LRESULT CALLBACK GetTextInterface::HookProc(int code, WPARAM wParam, LPARAM lPar
     // 将消息传递给下一个钩子
     return CallNextHookEx(ChatgptBase::getInstance()->keyboardHook, code, wParam, lParam);
 }
+#elif defined(Q_OS_MACOS)
+CGEventRef GetTextInterface::keyEventHandler(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon)
+{
+//    // 获取按键的键码和修饰键
+//    CGKeyCode keyCode = (CGKeyCode)CGEventGetIntegerValueField(event, kCGKeyboardEventKeycode);
+//    CGEventFlags flags = CGEventGetFlags(event);
+//
+//    //    std::cout <<keyCode << std::endl;
+//    // 判断是否按下了a键
+//    if (keyCode == 8 && (flags & kCGEventFlagMaskCommand) != 0) {
+//        // 延迟检查剪贴板以确保选中的文本已被复制
+//        QTimer::singleShot(100, []() mutable
+//                           {
+//                               auto * chat = ChatgptBase::getInstance();
+//                               // 获取剪贴板实例
+//                               QClipboard* clipboard = QApplication::clipboard();
+//
+//                               // 判断剪贴板中是否有文本数据
+//                               if (!clipboard->mimeData()->hasText()) {
+//                                   //                    qDebug() << "No text data in clipboard!";
+//                                   return ;
+//                               }
+//
+//                               // 获取剪贴板中的文本数据
+//                               QString text = clipboard->mimeData()->text();
+//
+//                               // 输出剪切板文本内容
+//                               //                qDebug() << "Clipboard text: " << text;
+//                               chat->text = text;
+//                               emit chat->textChanged(text);
+//                           });
+//    }
+//
+//    // 返回事件给下一个处理器
+    return event;
+}
+
+#endif
 
 void GetTextInterface::installKeyboardHook() {
+    if(chat == nullptr){
+        return;
+    }
+#if defined(Q_OS_WIN)
     if (chat->keyboardHook != nullptr) {
         return ;
     }
@@ -162,11 +212,42 @@ void GetTextInterface::installKeyboardHook() {
         return ;
     }
     return ;
+#elif defined(Q_OS_MACOS)
+    // 定义一个事件类型列表，包含我们感兴趣的事件类型和类别
+//    qDebug() << "install mac key borad";
+//    std::thread my_thread([this](){
+//        chat->eventTap = CGEventTapCreate(kCGSessionEventTap, kCGHeadInsertEventTap, kCGEventTapOptionListenOnly, kCGEventMaskForAllEvents, keyEventHandler, NULL);
+//        // 检查事件源是否创建成功
+//        if (!chat->eventTap) {
+//            qDebug() << "Failed to create event tap." ;
+//            return ;
+//        }
+//        // 创建一个事件循环源，用于将事件源添加到事件循环中
+//        CFRunLoopSourceRef runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, chat->eventTap, 0);
+//
+//        // 将事件循环源添加到当前线程的事件循环中
+//        CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, kCFRunLoopCommonModes);
+//
+//        // 启用事件源
+//        CGEventTapEnable(chat->eventTap, true);
+//
+//        // 运行一个事件循环，等待用户输入
+//        CFRunLoopRun();
+//    });
+//    my_thread.detach();
+#endif
 }
 
 void GetTextInterface::uninstallKeyboardHook() {
+#if defined(Q_OS_WIN)
     if (chat->keyboardHook != nullptr) {
         UnhookWindowsHookEx(chat->keyboardHook);
         chat->keyboardHook = nullptr;
     }
+#elif defined(Q_OS_MACOS)
+    qDebug() << "disable mac key borad";
+    // 注销事件处理器，并将handlerRef置空
+//    RemoveEventHandler(chat->handlerRef);
+//    chat->handlerRef = NULL;
+#endif
 }

@@ -10,7 +10,11 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories(${CMAKE_SOURCE_DIR})
-
+if(APPLE)
+    # 查找Carbon库
+    find_library(CARBON_LIBRARY Carbon)
+    find_library(ApplicationServices_LIBRARY ApplicationServices)
+endif()
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
@@ -75,9 +79,18 @@ endif()
 endif()
 find_package(Qt6 COMPONENTS Network REQUIRED)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE
-                        Qt${QT_VERSION_MAJOR}::Widgets
-                        Qt${QT_VERSION_MAJOR}::Network)
+if(APPLE)
+    target_link_libraries(${PROJECT_NAME} PRIVATE
+                            Qt${QT_VERSION_MAJOR}::Widgets
+                            Qt${QT_VERSION_MAJOR}::Network
+                            ${CARBON_LIBRARY}
+                            ${ApplicationServices_LIBRARY})
+else()
+    target_link_libraries(${PROJECT_NAME} PRIVATE
+                            Qt${QT_VERSION_MAJOR}::Widgets
+                            Qt${QT_VERSION_MAJOR}::Network)
+endif()
+
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com

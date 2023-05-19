@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <Windows.h>
 #include <QMimeData>
 #include "clickablelabel.h"
 #include <QSettings>

@@ -104,7 +104,7 @@ void ButtonList::SaveToSettings(QSettings *settings) {
             settings->setValue(key_name, btn.name);
         }
     }
-    settings->setValue("btns", list_buttons.size() - cnt);
+    settings->setValue("btns", (int)(list_buttons.size()) - cnt);
     qDebug() << "cnts:" << cnt << ",last : " << last_cnt
              << " , all : " << list_buttons.size();
     for (int i = list_buttons.size() - cnt;

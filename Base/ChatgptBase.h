@@ -6,7 +6,13 @@
 #define CHATGPT_SIDEBAR_CHATGPTBASE_H
 
 #include <QString>
+#if defined(Q_OS_WIN)
 #include <Windows.h>
+#elif defined(Q_OS_MACOS)
+//#include "Carbon/Carbon.h"
+#include <ApplicationServices/ApplicationServices.h>
+#endif
+
 #include <QObject>
 
 class ChatgptBase : public QObject {
@@ -19,9 +25,12 @@ public:
     };
     UseMode mode;
     QString text;
+#if defined(Q_OS_WIN)
     HHOOK keyboardHook;
     HHOOK mouseHook;
-
+#elif defined(Q_OS_MACOS)
+    CFMachPortRef  eventTap;
+#endif
     // 获取 ChatgptBase 实例的静态成员函数
     static ChatgptBase* getInstance();
 
