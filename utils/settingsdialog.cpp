@@ -7,7 +7,15 @@
 SettingsDialog::SettingsDialog(QWidget *parent)
     : QDialog(parent), edit_info(new std::map<QString, QLineEdit *>()),
       ui(new Ui::SettingsDialog) {
+    // 宏 判断是否是win系统
+#if defined(Q_OS_WIN)
     m_settings = new QSettings("sidebar.ini", QSettings::IniFormat);
+    // 如果是mac
+#elif defined(Q_OS_MACOS)
+    // mac 申请配置文件写入权限 读取配置
+    m_settings = new QSettings("/Users/Shared/sidebar.ini", QSettings::IniFormat);
+    // 输出配置文件路径
+#endif
     ui->setupUi(this);
     ui->verticalLayout->addSpacing(10);
 
