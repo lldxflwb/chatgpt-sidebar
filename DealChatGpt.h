@@ -9,13 +9,13 @@
 #include <QNetworkProxy>
 #include <QSettings>
 #include "interface/GetTextInterface.h"
+#include "utils/Proxy/ProxyAction.h"
 class DealChatGpt : public GetTextInterface{
 public:
     DealChatGpt();
     QTextEdit * out;
 
     void TalkWithGpt(QString text,QTextEdit * out);
-    QNetworkAccessManager* networkManager;
     QSettings * m_setting;
 public:
     void setupNetworkManager(QObject *parent = nullptr);

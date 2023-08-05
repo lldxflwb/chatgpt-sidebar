@@ -14,8 +14,13 @@
 #include <QJsonArray>
 #include <QSettings>
 #include <QMouseEvent>
+#include "utils/Proxy/ProxyManager.h"
+
+extern QNetworkAccessManager * networkManager;
+extern ProxyManager * proxyManager;
 
 MainWindow *MainWindow::instance = nullptr;
+QObject * globalWindow;
 
 MainWindow::MainWindow(QWidget *parent)
         : QMainWindow(parent), clicked_button(false), ui(new Ui::MainWindow) {
@@ -29,6 +34,8 @@ MainWindow::MainWindow(QWidget *parent)
 //    setting = new QSettings("sidebar.ini", QSettings::IniFormat);
     setWindowTitle("全局鼠标事件监听示例");
     instance = this;
+    globalWindow = this;
+    proxyManager=new ProxyManager();
     this->bar = new LineBar();
     this->bar->settings_dialog = setting_ui;
     this->bar->InitButton();

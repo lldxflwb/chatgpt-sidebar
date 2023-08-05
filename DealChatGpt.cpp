@@ -8,6 +8,12 @@
 #include <QNetworkReply>
 #include <QNetworkReply>
 #include <QJsonArray>
+#include "utils/Proxy/ProxyManager.h"
+
+extern ProxyManager * proxyManager;
+
+QNetworkAccessManager * networkManager;
+
 DealChatGpt::DealChatGpt() {
 
 }
@@ -17,24 +23,14 @@ void DealChatGpt::TalkWithGpt(QString text, QTextEdit *out) {
 }
 
 void DealChatGpt::setupNetworkManager(QObject *parent ) {
-    networkManager = new QNetworkAccessManager(parent);
-
-    // 设置代理
-    QNetworkProxy proxy;
-    proxy.setType(QNetworkProxy::Socks5Proxy);
-    proxy.setHostName(m_setting->value("ip").toString());
-    proxy.setPort(m_setting->value("port").toString().toInt());
-    QNetworkProxy::setApplicationProxy(proxy);
-    qDebug() << "代理初始化";
+    proxyManager->SetSocks5Proxy(
+            m_setting->value("ip").toString(),
+            m_setting->value("port").toString().toInt());
 }
 
 void DealChatGpt::OnSettingChanged(QSettings *settings) {
-    // 设置代理
-    QNetworkProxy proxy;
-    proxy.setType(QNetworkProxy::Socks5Proxy);
-    proxy.setHostName(m_setting->value("ip").toString());
-    proxy.setPort(m_setting->value("port").toString().toInt());
-    QNetworkProxy::setApplicationProxy(proxy);
-    qDebug() << "重设代理";
+    proxyManager->SetSocks5Proxy(
+            m_setting->value("ip").toString(),
+            m_setting->value("port").toString().toInt());
 }
 

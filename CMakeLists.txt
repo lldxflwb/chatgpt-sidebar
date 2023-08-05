@@ -26,6 +26,7 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 #file(GLOB_RECURSE UI_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.ui)
 #set(PROJECT_SOURCES ${HEAD_FILES} ${SOURCE_FILES} ${UI_FILES})
 
+aux_source_directory(utils/Proxy PROXY_SOURCES)
 
 set(PROJECT_SOURCES
     main.cpp
@@ -51,6 +52,7 @@ set(PROJECT_SOURCES
     interface/GetTextInterface.h
     Base/ChatgptBase.cpp
     Base/ChatgptBase.h
+        ${PROXY_SOURCES}
     qrc.qrc
 )
 
