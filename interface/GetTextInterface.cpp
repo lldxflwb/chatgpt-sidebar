@@ -8,6 +8,8 @@
 #include <QClipboard>
 #include <QTimer>
 #include <thread>
+#include <QMessageBox>
+
 GetTextInterface::GetTextInterface() :GetTextInterface(ChatgptBase::UseMode::DefaultMode,""){
 }
 
@@ -215,6 +217,24 @@ void GetTextInterface::installKeyboardHook() {
 #elif defined(Q_OS_MACOS)
     // 定义一个事件类型列表，包含我们感兴趣的事件类型和类别
     qDebug() << "install mac key borad";
+    // 判断是否拿到了权限
+    if (!AXIsProcessTrustedWithOptions(NULL)) {
+        // 弹窗 提示用户打开辅助功能
+        QMessageBox::information(NULL, "提示", "请打开辅助功能", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+        // 获取当前程序的路径
+        QString path = QCoreApplication::applicationDirPath();
+        // 转化为 CFStringRef
+        CFStringRef pathRef = CFStringCreateWithCString(NULL, path.toStdString().c_str(), kCFStringEncodingUTF8);
+        // 申请权限 AXMakeProcessTrusted 获取申请结果
+        auto result = AXMakeProcessTrusted(pathRef);
+        // 判断是否申请成功
+        if (result) {
+            qDebug() << "申请成功";
+        } else {
+            qDebug() << "申请失败";
+        }
+        return ;
+    }
     std::thread my_thread([this](){
         chat->eventTap = CGEventTapCreate(kCGSessionEventTap, kCGHeadInsertEventTap, kCGEventTapOptionListenOnly, kCGEventMaskForAllEvents, keyEventHandler, NULL);
         // 检查事件源是否创建成功
