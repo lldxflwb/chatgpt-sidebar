@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 
 #include <QApplication>
+#include "TestFunc.h"
 #include <QDebug>
 #include "utils/logs.h"
 int main(int argc, char *argv[])
@@ -11,5 +12,7 @@ int main(int argc, char *argv[])
 //    logSysInit("log.txt");
     MainWindow w;
     w.hide();
+//    TestFunc t;
+//    t.TestProxyConfigWidgetPublic();
     return a.exec();
 }

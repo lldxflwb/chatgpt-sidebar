@@ -27,7 +27,8 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 #set(PROJECT_SOURCES ${HEAD_FILES} ${SOURCE_FILES} ${UI_FILES})
 
 aux_source_directory(utils/Proxy PROXY_SOURCES)
-
+aux_source_directory(utils/Ui/Layout LAYOUT_SOURCE)
+aux_source_directory(utils/AutoConfig AUTO_CONFIG_SOURCE)
 set(PROJECT_SOURCES
     main.cpp
     clickablelabel.cpp
@@ -53,6 +54,9 @@ set(PROJECT_SOURCES
     Base/ChatgptBase.cpp
     Base/ChatgptBase.h
         ${PROXY_SOURCES}
+        ${LAYOUT_SOURCE}
+        ${AUTO_CONFIG_SOURCE}
+        TestFunc.cpp
     qrc.qrc
 )
 
@@ -80,15 +84,21 @@ else()
 endif()
 endif()
 find_package(Qt6 COMPONENTS Network REQUIRED)
+include(FetchContent)
+
+FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.11.2/json.tar.xz)
+FetchContent_MakeAvailable(json)
 
 if(APPLE)
     target_link_libraries(${PROJECT_NAME} PRIVATE
                             Qt${QT_VERSION_MAJOR}::Widgets
                             Qt${QT_VERSION_MAJOR}::Network
+                            nlohmann_json::nlohmann_json
                             ${CARBON_LIBRARY}
                             ${ApplicationServices_LIBRARY})
 else()
     target_link_libraries(${PROJECT_NAME} PRIVATE
+                            nlohmann_json::nlohmann_json
                             Qt${QT_VERSION_MAJOR}::Widgets
                             Qt${QT_VERSION_MAJOR}::Network)
 endif()

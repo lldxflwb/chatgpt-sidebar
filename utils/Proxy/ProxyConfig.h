@@ -9,7 +9,7 @@
 class ProxyConfig {
 public:
     // 支持的类型
-    enum class ProxyType {
+    enum ProxyType {
         None,
         Http,
         Socks5,
