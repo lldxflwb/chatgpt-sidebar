@@ -49,7 +49,7 @@ void ProxyManager::SetProxyConfig(std::shared_ptr<ProxyConfig> config) {
 
 void ProxyManager::SetHttpProxy(QString ip, int port, QString username, QString password) {
     auto proxyConfig = std::make_shared<ProxyActionHttp::ProxyConfigHttp>
-            (ip,port,username,password);
+            (ip,QString::fromStdString(std::to_string(port)),username,password);
     SetProxyConfig(proxyConfig);
 }
 

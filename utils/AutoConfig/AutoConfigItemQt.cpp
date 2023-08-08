@@ -3,7 +3,7 @@
 #include "AutoConfigItemQt.h"
 
 void AutoConfigItemQt::setValue(const QString& value) {
-    AutoConfigItem::setValue(value.toStdString());
+    AutoConfigItem::setValue(std::make_pair(ConfigValueType::String,value.toStdString()));
 }
 
 QString AutoConfigItemQt::getValueAsQString() const {

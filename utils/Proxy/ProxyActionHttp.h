@@ -9,20 +9,44 @@
 #include <QString>
 #include <memory>
 
+
 class ProxyActionHttp : public ProxyAction{
 public:
     class ProxyConfigHttp : public ProxyConfig{
     public:
         QString host;
-        int port;
+        QString port;
         QString username;
         QString password;
-        ProxyConfigHttp(QString host, int port, QString username, QString password) {
-            this->host = host;
-            this->port = port;
-            this->username = username;
-            this->password = password;
-            this->proxyType = ProxyType::Http;
+
+        ProxyConfigHttp(QString host, QString port, QString username, QString password) {
+            autoConfigQt = new AutoConfigQt("proxyHttp.ini");
+            if(autoConfigQt->fileIsExist()){
+                autoConfigQt->readFromFile();
+                this->host = autoConfigQt->getItemAsQString("Host");
+                this->port = autoConfigQt->getItemAsQString("Port");
+                this->username = autoConfigQt->getItemAsQString("Username");
+                this->password = autoConfigQt->getItemAsQString("Password");
+                this->proxyType = static_cast<ProxyType>(std::get<int>(autoConfigQt->getItem("ProxyType")->getValue()));
+            }
+            else{
+                ConfigValue chost = host.toStdString();
+                autoConfigQt->addItems("Host", chost);
+                this->host = host;
+                ConfigValue cport = port.toStdString();
+                autoConfigQt->addItems("Port", cport);
+                this->port = port;
+                ConfigValue cusername = username.toStdString();
+                autoConfigQt->addItems("Username", cusername);
+                this->username = username;
+                ConfigValue cpassword = password.toStdString();
+                autoConfigQt->addItems("Password", cpassword);
+                this->password = password;
+                ConfigValue cProxyType = static_cast<int>(ProxyType::Http);
+                autoConfigQt->addItems("ProxyType", cProxyType);
+                this->proxyType = ProxyType::Http;
+                autoConfigQt->saveToFile();
+            }
         }
     };
 

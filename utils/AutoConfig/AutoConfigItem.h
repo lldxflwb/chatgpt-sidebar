@@ -12,17 +12,27 @@
 #include <vector>
 
 using ConfigValue = std::variant<int, double, std::string>;
+enum class ConfigValueType {
+    Int,
+    Double,
+    String
+};
 
 class AutoConfigItem {
 private:
     ConfigValue value;
+    ConfigValueType type;
     std::vector<std::function<void(const ConfigValue&)>> observers;
 
 public:
-    void setValue(const ConfigValue &value);
-    ConfigValue getValue() const;
+    virtual void setValue(const ConfigValue& newValue);
+    virtual void setValue(std::pair<ConfigValueType, ConfigValue> newValue);
+    virtual void setString(const std::string& newValue);
+    virtual void setInt(int newValue);
+    virtual void setDouble(double newValue);
+    virtual std::pair<ConfigValueType, const ConfigValue> getValueAsPair() const;
+    virtual ConfigValue getValue() const;
     void addObserver(const std::function<void(const ConfigValue&)>& observer);
-
 private:
     void notify(const ConfigValue &value) const;
 };

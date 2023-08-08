@@ -6,6 +6,8 @@
 #define CHATGPT_SIDEBAR_PROXYCONFIG_H
 
 // 代理配置类 基础类
+#include <utils/AutoConfig/AutoConfigQt.h>
+
 class ProxyConfig {
 public:
     // 支持的类型
@@ -23,6 +25,7 @@ public:
     // virtual destruct
     virtual ~ProxyConfig() = default;
     ProxyType proxyType;
+    AutoConfigQt * autoConfigQt;
 };
 
 

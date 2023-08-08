@@ -11,9 +11,11 @@ class AutoConfigQt : public AutoConfig {
 public:
     using AutoConfig::AutoConfig;
 
-    void addItem(const std::string& key, const QString& value);
-    QString getItemAsQString(const QString & key) const;
-    const AutoConfigItemQt * getItemQt(const QString & key) const;
+    explicit AutoConfigQt(const std::string &fileName);
+
+    void addQString(const std::string& key, const QString& value);
+    QString getItemAsQString(const QString & key) ;
+    AutoConfigItemQt * getItemQt(const QString & key) ;
 };
 
 #endif // CHATGPT_AUTOCONFIGQT_H

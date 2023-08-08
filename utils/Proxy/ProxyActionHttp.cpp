@@ -12,7 +12,7 @@ void ProxyActionHttp::setProxy() {
     auto proxyConfig = std::dynamic_pointer_cast<ProxyConfigHttp>(this->proxyConfig);
     proxy.setType(QNetworkProxy::HttpProxy);
     proxy.setHostName(proxyConfig->host);
-    proxy.setPort(proxyConfig->port);
+    proxy.setPort(std::stoi(proxyConfig->port.toStdString()));
     proxy.setUser(proxyConfig->username);
     proxy.setPassword(proxyConfig->password);
     QNetworkProxy::setApplicationProxy(proxy);

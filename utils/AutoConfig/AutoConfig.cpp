@@ -6,13 +6,14 @@
 #include <nlohmann/json.hpp>
 #include <fstream>
 
+
 AutoConfig::AutoConfig(const std::string& fileName) : fileName(fileName) {}
 
-const AutoConfigItem* AutoConfig::getItem(const std::string& key) const {
+AutoConfigItem* AutoConfig::getItem(const std::string& key) {
     if(items.find(key) == items.end()) {
         return nullptr;
     }
-    return &items.at(key);
+    return items.at(key);
 }
 
 void AutoConfig::readFromFile() {
@@ -26,11 +27,11 @@ void AutoConfig::readFromFile() {
 
     for (const auto& [key, value] : j.items()) {
         if (value.is_number_integer()) {
-            items[key].setValue(value.get<int>());
+            addItems(key, value.get<int>());
         } else if (value.is_number_float()) {
-            items[key].setValue(value.get<double>());
+            addItems(key,value.get<double>());
         } else if (value.is_string()) {
-            items[key].setValue(value.get<std::string>());
+            addItems(key, value.get<std::string>());
         }
     }
 }
@@ -45,7 +46,7 @@ void AutoConfig::saveToFile() {
 
     for (const auto& itemPair : items) {
         std::string key = itemPair.first;
-        auto& item = itemPair.second;
+        auto& item = *itemPair.second;
         const auto& value = item.getValue();
 
         std::visit([&, key](const auto& val) {
@@ -57,11 +58,25 @@ void AutoConfig::saveToFile() {
 }
 
 //    const std::unordered_map<std::string, AutoConfigItem>& getItems() const; // 新增
-const std::unordered_map<std::string, AutoConfigItem>& AutoConfig::getItems() const {
+const ConfigValues& AutoConfig::getItems() const {
     return items;
 }
 
 AutoConfigItem * AutoConfig::addItems(const std::string& key, const ConfigValue & value) {
-    items[key].setValue(value);
-    return &items[key];
+    if(items.find(key) == items.end()) {
+        auto item = new AutoConfigItem();
+        item->setValue(value);
+        item->addObserver([this](const ConfigValue& newValue) {
+            this->saveToFile();
+        });
+        auto * currItem = new AutoConfigItem(*item);
+        items[key] = currItem;
+        return currItem;
+    }
+    return items[key];
+}
+
+bool AutoConfig::fileIsExist(){
+    std::ifstream file(fileName);
+    return file.good();
 }

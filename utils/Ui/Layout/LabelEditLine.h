@@ -9,20 +9,24 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QWidget>
+#include "utils/AutoConfig/AutoConfigItemQt.h"
 
 class LabelEditLine : public QHBoxLayout{
 public:
     QLabel * label;
     QLineEdit * edit;
+    AutoConfigItemQt * value;
+    std::string ChangeValue;
     LabelEditLine
     (
             const QString& labelText,
-            const QString& editContent,
+            AutoConfigItem * value,
             QWidget *parent = nullptr,
             const QString& promptText="");
     // set get
     QString getEditContent();
     void setEditContent(const QString& content);
+    ~LabelEditLine();
 
 };
 

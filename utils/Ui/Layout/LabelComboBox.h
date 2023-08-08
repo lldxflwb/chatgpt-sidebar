@@ -10,15 +10,20 @@
 #include <QComboBox>
 #include <QWidget>
 #include <vector>
-
+#include "utils/AutoConfig/AutoConfigItemQt.h"
 class LabelComboBox : public QHBoxLayout{
 public:
     QLabel * label;
     QComboBox * comboBox;
+    AutoConfigItemQt * value;
+    std::vector<std::pair<QString,QVariant>> comboBoxContentData;
+    int ChangeValue;
+
     LabelComboBox
     (
             const QString& labelText,
             std::vector<std::pair<QString,QVariant>> comboBoxContentData,
+            AutoConfigItem * value,
             QWidget *parent = nullptr,
             const QString& promptText="");
     // set get

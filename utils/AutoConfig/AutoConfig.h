@@ -9,19 +9,22 @@
 #include <string>
 #include <unordered_map>
 
+typedef std::unordered_map<std::string, AutoConfigItem *> ConfigValues;
+
 class AutoConfig {
 private:
-    std::unordered_map<std::string, AutoConfigItem> items;
+    ConfigValues items;
     std::string fileName;
 
 public:
     AutoConfig(const std::string& fileName);
-    const AutoConfigItem* getItem(const std::string& key) const;
-    const std::unordered_map<std::string, AutoConfigItem>& getItems() const; // 新增
+    AutoConfigItem* getItem(const std::string& key);
+    const ConfigValues & getItems() const; // 新增
     void readFromFile();
     void saveToFile();
     // addItems() 新增
     AutoConfigItem * addItems(const std::string& key, const ConfigValue & value);
+    bool fileIsExist();
 };
 
 
