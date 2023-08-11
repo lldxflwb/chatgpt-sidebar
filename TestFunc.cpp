@@ -13,6 +13,4 @@ void TestFunc::TestProxyConfigWidgetPublic() {
     auto pconfig = std::make_shared<ProxyActionHttp::ProxyConfigHttp>("","6863","","");
     ProxyConfigWidgetPublic * p = new ProxyConfigWidgetPublic(pconfig);
     p->show();
-    std::variant<QString> a;
-    a = "123";
 }

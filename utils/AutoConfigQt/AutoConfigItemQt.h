@@ -4,7 +4,7 @@
 #define CHATGPT_AUTOCONFIGITEMQT_H
 
 #include <QString>
-#include "AutoConfigItem.h"
+#include "utils/AutoConfig/AutoConfigItem.h"
 
 class AutoConfigItemQt : public AutoConfigItem {
 public:

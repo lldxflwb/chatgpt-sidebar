@@ -10,7 +10,7 @@
 #include <QComboBox>
 #include <QWidget>
 #include <vector>
-#include "utils/AutoConfig/AutoConfigItemQt.h"
+#include "utils/AutoConfigQt/AutoConfigItemQt.h"
 class LabelComboBox : public QHBoxLayout{
 public:
     QLabel * label;

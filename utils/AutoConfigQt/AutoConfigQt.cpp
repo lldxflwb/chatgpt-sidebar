@@ -21,4 +21,5 @@ QString AutoConfigQt::getItemAsQString(const QString & key) {
     return static_cast< AutoConfigItemQt *>(item);
 }
 
-AutoConfigQt::AutoConfigQt(const std::string &fileName) : AutoConfig(fileName) {}
+AutoConfigQt::AutoConfigQt(const std::string &fileName, StoragePolicy _stroagePolicy, AutoConfigQt *_parent)
+: AutoConfig(fileName, _stroagePolicy, _parent) {}

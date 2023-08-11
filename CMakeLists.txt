@@ -29,6 +29,7 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 aux_source_directory(utils/Proxy PROXY_SOURCES)
 aux_source_directory(utils/Ui/Layout LAYOUT_SOURCE)
 aux_source_directory(utils/AutoConfig AUTO_CONFIG_SOURCE)
+aux_source_directory(utils/AutoConfigQt AUTO_CONFIG_SOURCE_QT)
 set(PROJECT_SOURCES
     main.cpp
     clickablelabel.cpp
@@ -56,6 +57,7 @@ set(PROJECT_SOURCES
         ${PROXY_SOURCES}
         ${LAYOUT_SOURCE}
         ${AUTO_CONFIG_SOURCE}
+        ${AUTO_CONFIG_SOURCE_QT}
         TestFunc.cpp
     qrc.qrc
 )

@@ -4,14 +4,17 @@
 #define CHATGPT_AUTOCONFIGQT_H
 
 #include <QString>
-#include "AutoConfig.h"
+#include "utils/AutoConfig/AutoConfig.h"
 #include "AutoConfigItemQt.h"
 
 class AutoConfigQt : public AutoConfig {
 public:
     using AutoConfig::AutoConfig;
 
-    explicit AutoConfigQt(const std::string &fileName);
+    explicit AutoConfigQt(
+            const std::string &fileName,
+            StoragePolicy _stroagePolicy = StoragePolicy::SingleFile,
+            AutoConfigQt *_parent = nullptr);
 
     void addQString(const std::string& key, const QString& value);
     QString getItemAsQString(const QString & key) ;

@@ -13,7 +13,7 @@
 #include <QVBoxLayout>
 #include "utils/Ui/Layout/LabelEditLine.h"
 #include "utils/Ui/Layout/LabelComboBox.h"
-#include "utils/AutoConfig/AutoConfigQt.h"
+#include "utils/AutoConfigQt/AutoConfigQt.h"
 class ProxyConfigWidgetPublic : public QWidget {
 protected:
     std::shared_ptr<ProxyConfig> proxyConfig;

@@ -9,7 +9,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QWidget>
-#include "utils/AutoConfig/AutoConfigItemQt.h"
+#include "utils/AutoConfigQt/AutoConfigItemQt.h"
 
 class LabelEditLine : public QHBoxLayout{
 public:

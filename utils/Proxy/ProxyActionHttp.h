@@ -20,9 +20,9 @@ public:
         QString password;
 
         ProxyConfigHttp(QString host, QString port, QString username, QString password) {
-            autoConfigQt = new AutoConfigQt("proxyHttp.ini");
+            autoConfigQt = new AutoConfigQt("proxyHttp.ini",AutoConfig::StoragePolicy::MultiFile);
             if(autoConfigQt->fileIsExist()){
-                autoConfigQt->readFromFile();
+                autoConfigQt->readFile();
                 this->host = autoConfigQt->getItemAsQString("Host");
                 this->port = autoConfigQt->getItemAsQString("Port");
                 this->username = autoConfigQt->getItemAsQString("Username");
@@ -45,7 +45,7 @@ public:
                 ConfigValue cProxyType = static_cast<int>(ProxyType::Http);
                 autoConfigQt->addItems("ProxyType", cProxyType);
                 this->proxyType = ProxyType::Http;
-                autoConfigQt->saveToFile();
+                autoConfigQt->saveSingleFile();
             }
         }
     };
