@@ -8,8 +8,11 @@
 #include "utils/MySetting/Proxy/ProxyActionHttp.h"
 #include "utils/MySetting/KeyInfo/ChatGptKey.h"
 #include "ChatEngine/ChatGptEngine/OpenAiEngine.h"
-#include "ChatEngine/ChatInterface.h"
+
+#include "ChatEngine/BaiduEngine/BaiduEngine.h"
 #include <variant>
+#include <QTextEdit>
+#include "utils/MySetting/Panel/EnginePanel.h"
 
 void TestFunc::TestProxyConfigWidgetPublic() {
     auto pconfig = std::make_shared<ProxyActionHttp::ProxyConfigHttp>("","6863","","");
@@ -18,21 +21,46 @@ void TestFunc::TestProxyConfigWidgetPublic() {
 }
 
 void TestFunc::TestChatGptConfig() {
-    ChatInterface * chat = new OpenAiEngine();
+    ChatInterface *chat = new BaiduEngine();
     auto w = new ChatGptKey("111");
     w->autoConfigQt->readFile();
     w->show();
-    QWidget * t = new QWidget();
-    QLineEdit * text_edit = new QLineEdit(t);
-    QHBoxLayout * layout = new QHBoxLayout(t);
-    layout->addWidget(text_edit);
-    t->setLayout(layout);
-    t->show();
+    TestChat(chat);
+}
 
-    chat->RegisterObserver([text_edit](QString text, ApiStatus status){
-        qDebug() << text ;
-        text_edit->setText(text_edit->text()+text);
+void TestFunc::TestChat(ChatInterface *chat) {
+
+    static QWidget * t ;
+    static QTextEdit * text_edit;
+    static QHBoxLayout * layout;
+    static QString * cache;
+    if(t== nullptr){
+        t=new QWidget();
+        text_edit = new QTextEdit(t);
+        layout = new QHBoxLayout(t);
+        layout->addWidget(text_edit);
+        t->setLayout(layout);
+        t->show();
+        cache= new QString();
+    }
+    *cache = "";
+    QString * tmp_cache = cache;
+    QTextEdit * edit = text_edit;
+
+    chat->RegisterObserver([edit,tmp_cache](QString text, ApiStatus status){
+        *tmp_cache = *tmp_cache + text;
+        edit->setText(*tmp_cache);
     });
 
-    chat->OnInput("hello");
+    chat->OnInput("你是谁？请自我介绍一下，以及我该如何使用你？");
+}
+
+void TestFunc::TestBaidu() {
+    BaiduEngine *chat = new BaiduEngine();
+    TestChat(chat);
+}
+
+void TestFunc::TestPanel() {
+    EnginePanel * panel = new EnginePanel(EngineType::Baidu);
+    panel->show();
 }

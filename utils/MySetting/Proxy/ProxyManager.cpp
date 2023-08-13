@@ -63,3 +63,11 @@ void ProxyManager::SetSocks5Proxy(QString ip, int port, QString username, QStrin
 void ProxyManager::init() {
     networkManager = new QNetworkAccessManager();
 }
+
+ProxyConfig::ProxyType ProxyManager::GetProxyType() {
+    return this->proxyType;
+}
+
+std::shared_ptr<ProxyConfig> ProxyManager::GetProxyConfig() {
+    return this->proxyConfig;
+}

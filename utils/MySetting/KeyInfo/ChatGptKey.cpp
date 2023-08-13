@@ -13,4 +13,5 @@ ChatGptKey::ChatGptKey( QString key, QWidget *parent, const Qt::WindowFlags &f)
     this->keyEditLine = new LabelEditLine("key",item,this,"");
     this->setLayout(this->keyEditLine);
     chatGptConfig = this->autoConfigQt;
+    this->hide();
 }

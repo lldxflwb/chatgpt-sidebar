@@ -164,6 +164,9 @@ void AutoConfig::saveMultiFile() {
 }
 
 void AutoConfig::readFromMultiFile() {
+    if(!this->fileIsExist()){
+        this->saveSingleFile();
+    }
     std::ifstream file(fileName);
     if (!file) {
         throw std::runtime_error("Failed to open file " + fileName);
@@ -174,6 +177,10 @@ void AutoConfig::readFromMultiFile() {
 }
 
 void AutoConfig::readFromSingleFile() {
+    // 文件不存在 则创建
+    if(!this->fileIsExist()){
+        this->saveSingleFile();
+    }
     std::ifstream file(fileName);
     if (!file) {
         throw std::runtime_error("Failed to open file " + fileName);

@@ -22,9 +22,11 @@ extern ProxyManager * proxyManager;
 MainWindow *MainWindow::instance = nullptr;
 QObject * globalWindow;
 QWidget * aiNetwork;
+QTextEdit * outPutTextArea;
 
 MainWindow::MainWindow(QWidget *parent)
         : QMainWindow(parent), clicked_button(false), ui(new Ui::MainWindow) {
+    proxyManager=new ProxyManager();
     setting_ui = new SettingsDialog();
     setting_ui->show();
     this->hide();
@@ -35,9 +37,9 @@ MainWindow::MainWindow(QWidget *parent)
     m_setting = setting_ui->m_settings;
 //    setting = new QSettings("sidebar.ini", QSettings::IniFormat);
     setWindowTitle("全局鼠标事件监听示例");
+    outPutTextArea = this->ui->out_put_text_2;
     instance = this;
     globalWindow = this;
-    proxyManager=new ProxyManager();
     this->bar = new LineBar();
     this->bar->settings_dialog = setting_ui;
     this->bar->InitButton();
@@ -91,116 +93,120 @@ void MainWindow::TalkWithChatgpt(QString text, QString prompt) {
 }
 
 void MainWindow::fetchAnswerFromGPT3(const QString &text) {
-    this->ui->i_2->setText(text);
-    QUrl url("https://api.openai.com/v1/chat/completions");
-    cache_text = "";
+    this->setting_ui->engine_panel->cacheText ="";
+    this->setting_ui->engine_panel->GetEngine()->OnInput(text);
+    MainWindow::getInstance()->ui->out_put_text_2->moveCursor(QTextCursor::End);
     this->show();
-    QNetworkRequest request(url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-//    request.setRawHeader("OpenAI-Organization", "org-czN24sxhQjpKxcATiidkrSzG");
-//    request.setRawHeader("Authorization", "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");
-    auto key = "Bearer " + m_setting->value("key").toString();
-    request.setRawHeader("Authorization", key.toUtf8());
-    QJsonObject jsonBody;
-    jsonBody["model"] = "gpt-3.5-turbo";
-    QJsonArray messages;
-    QJsonObject message;
-    message["role"] = "user";
-    message["content"] = text;
-    messages.append(message);
-    jsonBody["messages"] = messages;
-    jsonBody["stream"] = true;
-    QByteArray jsonString = QJsonDocument(jsonBody).toJson();
-    // 转换为 QObject* 类型
-    const QObject *receiver = static_cast<const QObject *>(qobject_cast<QObject *>(this));;
-    QNetworkReply *reply = networkManager->post(request, jsonString);
-    connect(reply, &QNetworkReply::readyRead, this, &MainWindow::handleApiResponse);
+    this->ui->i_2->setText(text);
+//    QUrl url("https://api.openai.com/v1/chat/completions");
+//    cache_text = "";
+//    this->show();
+//    QNetworkRequest request(url);
+//    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+////    request.setRawHeader("OpenAI-Organization", "org-czN24sxhQjpKxcATiidkrSzG");
+////    request.setRawHeader("Authorization", "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");
+//    auto key = "Bearer " + m_setting->value("key").toString();
+//    request.setRawHeader("Authorization", key.toUtf8());
+//    QJsonObject jsonBody;
+//    jsonBody["model"] = "gpt-3.5-turbo";
+//    QJsonArray messages;
+//    QJsonObject message;
+//    message["role"] = "user";
+//    message["content"] = text;
+//    messages.append(message);
+//    jsonBody["messages"] = messages;
+//    jsonBody["stream"] = true;
+//    QByteArray jsonString = QJsonDocument(jsonBody).toJson();
+//    // 转换为 QObject* 类型
+//    const QObject *receiver = static_cast<const QObject *>(qobject_cast<QObject *>(this));;
+//    QNetworkReply *reply = networkManager->post(request, jsonString);
+//    connect(reply, &QNetworkReply::readyRead, this, &MainWindow::handleApiResponse);
 }
 
 void MainWindow::handleApiResponse() {
-    QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
-
-    // 检查网络错误
-    if (reply->error() != QNetworkReply::NoError) {
-        QMessageBox::critical(this, tr("发生错误"), tr("网络错误"), QMessageBox::Discard);
-        qDebug() << "Error:" << reply->errorString();
-        return;
-    }
-
-    // 读取响应数据
-    QByteArray data = reply->readAll();
-    {
-        // 将 JSON 字符串转换为 QJsonDocument
-        QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
-
-        // 如果 JSON 文档不为空且不是空对象，则进行解析
-        if (!jsonDoc.isNull() && jsonDoc.isObject()) {
-            QJsonObject jsonObject = jsonDoc.object();
-
-            // 检查是否存在 error 对象
-            if (jsonObject.contains("error")) {
-                QJsonObject errorObject = jsonObject["error"].toObject();
-                QString errorMessage = errorObject["message"].toString();
-                QString errorType = errorObject["type"].toString();
-
-                // 在此处处理错误消息和错误类型，例如显示在消息框中
-                QMessageBox::critical(this, tr("发生错误"), errorMessage, QMessageBox::Close);
-            } else {
-//                qDebug() <<"未包含error";
-//                QMessageBox::critical(this, tr("发生错误"), tr("未处理"), QMessageBox::Close);
-            }
-        } else {
-//            qDebug() << "序列化失败";
-//            QMessageBox::critical(this, tr("发生错误"), tr("消息序列化失败"), QMessageBox::Close);
-        }
-    }
-    qDebug() << "111";
-    QTextStream stream(data);
-// 解析数据字段
-    while (!stream.atEnd()) {
-        QString line = stream.readLine();
-        qDebug() << "line:" << line;
-        if (line.startsWith("data:")) {
-            QString jsonStr = line.mid(5);
-//            qDebug() << "one line:" << jsonStr;
-
-            // 将 JSON 字符串转换为 QJsonDocument
-            QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonStr.toUtf8());
-
-            // 如果 JSON 文档不为空且不是空对象，则进行解析
-            if (!jsonDoc.isNull() && jsonDoc.isObject()) {
-                QJsonObject jsonObject = jsonDoc.object();
-
-                QString id = jsonObject["id"].toString();
-                QString object = jsonObject["object"].toString();
-                qint64 created = jsonObject["created"].toDouble();
-                QString model = jsonObject["model"].toString();
-
-                QJsonArray choicesArray = jsonObject["choices"].toArray();
-
-                // 遍历 choices 数组
-                for (int i = 0; i < choicesArray.size(); ++i) {
-                    QJsonObject choiceObject = choicesArray[i].toObject();
-
-                    QJsonObject deltaObject = choiceObject["delta"].toObject();
-                    QString role = deltaObject["role"].toString();
-                    QString content = deltaObject["content"].toString();
-
-                    int index = choiceObject["index"].toInt();
-                    QString finishReason = choiceObject["finish_reason"].toString();
-                    MainWindow::getInstance()->cache_text += content;
-                    MainWindow::getInstance()->ui->out_put_text_2->setText(MainWindow::getInstance()->cache_text);
-//                    MainWindow::getInstance()->ui->out_put_text_2->insertPlainText(content);
-                    MainWindow::getInstance()->ui->out_put_text_2->moveCursor(QTextCursor::End);
-                    qDebug() << content;
-                }
-            }
-        } else if (line == "") {
-            continue;
-        } else {
-
-        }
-    }
+//    QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
+//
+//    // 检查网络错误
+//    if (reply->error() != QNetworkReply::NoError) {
+//        QMessageBox::critical(this, tr("发生错误"), tr("网络错误"), QMessageBox::Discard);
+//        qDebug() << "Error:" << reply->errorString();
+//        return;
+//    }
+//
+//    // 读取响应数据
+//    QByteArray data = reply->readAll();
+//    {
+//        // 将 JSON 字符串转换为 QJsonDocument
+//        QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
+//
+//        // 如果 JSON 文档不为空且不是空对象，则进行解析
+//        if (!jsonDoc.isNull() && jsonDoc.isObject()) {
+//            QJsonObject jsonObject = jsonDoc.object();
+//
+//            // 检查是否存在 error 对象
+//            if (jsonObject.contains("error")) {
+//                QJsonObject errorObject = jsonObject["error"].toObject();
+//                QString errorMessage = errorObject["message"].toString();
+//                QString errorType = errorObject["type"].toString();
+//
+//                // 在此处处理错误消息和错误类型，例如显示在消息框中
+//                QMessageBox::critical(this, tr("发生错误"), errorMessage, QMessageBox::Close);
+//            } else {
+////                qDebug() <<"未包含error";
+////                QMessageBox::critical(this, tr("发生错误"), tr("未处理"), QMessageBox::Close);
+//            }
+//        } else {
+////            qDebug() << "序列化失败";
+////            QMessageBox::critical(this, tr("发生错误"), tr("消息序列化失败"), QMessageBox::Close);
+//        }
+//    }
+//    qDebug() << "111";
+//    QTextStream stream(data);
+//// 解析数据字段
+//    while (!stream.atEnd()) {
+//        QString line = stream.readLine();
+//        qDebug() << "line:" << line;
+//        if (line.startsWith("data:")) {
+//            QString jsonStr = line.mid(5);
+////            qDebug() << "one line:" << jsonStr;
+//
+//            // 将 JSON 字符串转换为 QJsonDocument
+//            QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonStr.toUtf8());
+//
+//            // 如果 JSON 文档不为空且不是空对象，则进行解析
+//            if (!jsonDoc.isNull() && jsonDoc.isObject()) {
+//                QJsonObject jsonObject = jsonDoc.object();
+//
+//                QString id = jsonObject["id"].toString();
+//                QString object = jsonObject["object"].toString();
+//                qint64 created = jsonObject["created"].toDouble();
+//                QString model = jsonObject["model"].toString();
+//
+//                QJsonArray choicesArray = jsonObject["choices"].toArray();
+//
+//                // 遍历 choices 数组
+//                for (int i = 0; i < choicesArray.size(); ++i) {
+//                    QJsonObject choiceObject = choicesArray[i].toObject();
+//
+//                    QJsonObject deltaObject = choiceObject["delta"].toObject();
+//                    QString role = deltaObject["role"].toString();
+//                    QString content = deltaObject["content"].toString();
+//
+//                    int index = choiceObject["index"].toInt();
+//                    QString finishReason = choiceObject["finish_reason"].toString();
+//                    MainWindow::getInstance()->cache_text += content;
+//                    MainWindow::getInstance()->ui->out_put_text_2->setText(MainWindow::getInstance()->cache_text);
+////                    MainWindow::getInstance()->ui->out_put_text_2->insertPlainText(content);
+//                    MainWindow::getInstance()->ui->out_put_text_2->moveCursor(QTextCursor::End);
+//                    qDebug() << content;
+//                }
+//            }
+//        } else if (line == "") {
+//            continue;
+//        } else {
+//
+//        }
+//    }
 }
 
 void MainWindow::on_pushButton_clicked() {

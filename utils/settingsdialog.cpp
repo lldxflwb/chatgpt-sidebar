@@ -38,6 +38,8 @@ SettingsDialog::SettingsDialog(QWidget *parent)
         ui->edit_key->setText(m_settings->value("key", "").toString());
     }
     ui->edit_key->setToolTip("请填入您的openai的key，且请检查，您的赠送费用是否过期，直达连接见readme");
+    this->engine_panel=new EnginePanel();
+    ui->verticalLayout->addWidget(this->engine_panel);
 
     ui->formLayout->setSizeConstraint(QLayout::SizeConstraint::SetMinimumSize);
     ui->verticalLayout->setSizeConstraint(

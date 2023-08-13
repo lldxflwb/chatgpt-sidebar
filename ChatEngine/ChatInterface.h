@@ -11,6 +11,7 @@
 #include <QWidget>
 
 enum class ApiStatus{
+    start,
     sending,
     finish,
     error

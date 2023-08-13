@@ -24,6 +24,8 @@ public:
     void SetProxyConfig(std::shared_ptr<ProxyConfig> config);
     void SetHttpProxy(QString ip, int port,QString username = "",QString password = "");
     void SetSocks5Proxy(QString ip, int port,QString username = "",QString password = "");
+    ProxyConfig::ProxyType GetProxyType();
+    std::shared_ptr<ProxyConfig> GetProxyConfig();
 };
 
 

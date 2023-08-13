@@ -15,6 +15,7 @@ extern AutoConfig * chatGptConfig;
 extern QNetworkAccessManager * networkManager;
 extern QWidget * aiNetwork;
 void OpenAiEngine::OnInput(const QString &input) {
+    this->Notify("",ApiStatus::start);
     QUrl url("https://api.openai.com/v1/chat/completions");
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
@@ -34,7 +35,11 @@ void OpenAiEngine::OnInput(const QString &input) {
     // 转换为 QObject* 类型
     const QObject *receiver = aiNetwork;
     QNetworkReply *reply = networkManager->post(request, jsonString);
-    QAbstractSocket::connect(reply, &QNetworkReply::readyRead, aiNetwork, [this,reply](){
+    QAbstractSocket::connect(
+            reply,
+            &QNetworkReply::readyRead,
+            aiNetwork,
+            [this,reply](){
 //        QNetworkReply *reply = qobject_cast<QNetworkReply *>(aiNetwork);
 
         // 检查网络错误

@@ -15,6 +15,7 @@ public:
     : QWidget(parent, f), autoConfigQt(autoConfigQt) {};
     void RegisterFatherConfig(AutoConfigQt * _fatherConfig){
         _fatherConfig->addChild(autoConfigQt);
+        autoConfigQt->parent=_fatherConfig;
     }
 };
 

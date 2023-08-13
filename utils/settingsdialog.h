@@ -9,7 +9,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include "buttonsettingborad.h"
-
+#include "utils/MySetting/Panel/EnginePanel.h"
 
 
 
@@ -36,6 +36,8 @@ public:
     std::map<QString,QLineEdit*>* edit_info;
     ButtonList * button_list;
     ButtonSettingBorad * button_setting_broad;
+    EnginePanel * engine_panel;
+
 private:
     Ui::SettingsDialog *ui;
 };
