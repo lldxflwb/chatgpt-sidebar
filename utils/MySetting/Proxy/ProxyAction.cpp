@@ -15,5 +15,4 @@ void ProxyAction::uninstallProxy() {
 }
 
 void ProxyAction::setProxy() {
-
 }

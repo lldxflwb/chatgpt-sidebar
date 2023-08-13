@@ -9,7 +9,7 @@
 class TestFunc {
 public:
     void TestProxyConfigWidgetPublic();
-
+    void TestChatGptConfig();
 };
 
 

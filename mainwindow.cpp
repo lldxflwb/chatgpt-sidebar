@@ -14,19 +14,21 @@
 #include <QJsonArray>
 #include <QSettings>
 #include <QMouseEvent>
-#include "utils/Proxy/ProxyManager.h"
+#include "utils/MySetting/Proxy/ProxyManager.h"
 
 extern QNetworkAccessManager * networkManager;
 extern ProxyManager * proxyManager;
 
 MainWindow *MainWindow::instance = nullptr;
 QObject * globalWindow;
+QWidget * aiNetwork;
 
 MainWindow::MainWindow(QWidget *parent)
         : QMainWindow(parent), clicked_button(false), ui(new Ui::MainWindow) {
     setting_ui = new SettingsDialog();
     setting_ui->show();
     this->hide();
+    aiNetwork = new QWidget();
     qDebug() << "开始初始化窗口";
     ui->setupUi(this);
     this->setWindowTitle("主窗口");

@@ -26,10 +26,14 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 #file(GLOB_RECURSE UI_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.ui)
 #set(PROJECT_SOURCES ${HEAD_FILES} ${SOURCE_FILES} ${UI_FILES})
 
-aux_source_directory(utils/Proxy PROXY_SOURCES)
-aux_source_directory(utils/Ui/Layout LAYOUT_SOURCE)
-aux_source_directory(utils/AutoConfig AUTO_CONFIG_SOURCE)
-aux_source_directory(utils/AutoConfigQt AUTO_CONFIG_SOURCE_QT)
+#aux_source_directory(utils/Proxy PROXY_SOURCES)
+#aux_source_directory(utils/Ui/Layout LAYOUT_SOURCE)
+#aux_source_directory(utils/AutoConfig AUTO_CONFIG_SOURCE)
+#aux_source_directory(utils/AutoConfigQt AUTO_CONFIG_SOURCE_QT)
+#aux_source_directory(ChatEngine/** ChatEngine_SOURCE)
+file(GLOB_RECURSE ChatEngine_SOURCE "ChatEngine/**.cpp" "ChatEngine/**.h")
+file(GLOB_RECURSE Util_SOURCE "utils/**.cpp" "utils/**.h")
+
 set(PROJECT_SOURCES
     main.cpp
     clickablelabel.cpp
@@ -44,6 +48,8 @@ set(PROJECT_SOURCES
     utils/settingsdialog.ui
     utils/settingsdialog.h
     utils/settingsdialog.cpp
+    utils/PubSub.cpp
+    utils/PubSub.h
     buttonsettingborad.h
     buttonsettingborad.cpp
     interface/SettingInterface.cpp
@@ -54,10 +60,8 @@ set(PROJECT_SOURCES
     interface/GetTextInterface.h
     Base/ChatgptBase.cpp
     Base/ChatgptBase.h
-        ${PROXY_SOURCES}
-        ${LAYOUT_SOURCE}
-        ${AUTO_CONFIG_SOURCE}
-        ${AUTO_CONFIG_SOURCE_QT}
+        ${Util_SOURCE}
+        ${ChatEngine_SOURCE}
         TestFunc.cpp
     qrc.qrc
 )

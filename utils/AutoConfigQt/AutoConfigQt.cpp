@@ -2,9 +2,10 @@
 
 #include "AutoConfigQt.h"
 
-void AutoConfigQt::addQString(const std::string& key, const QString& value) {
-    ConfigValue v = value.toStdString();
-    addItems(key, v);
+AutoConfigItemQt * AutoConfigQt::addQString(const std::string& key, const QString& value) {
+    AutoConfigItemQt * item = new AutoConfigItemQt();
+    item->setValue(value);
+    return static_cast<AutoConfigItemQt*>(addItems(key, item));
 }
 
 QString AutoConfigQt::getItemAsQString(const QString & key) {

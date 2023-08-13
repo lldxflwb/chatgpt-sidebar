@@ -27,7 +27,10 @@ void AutoConfigItem::notify(const ConfigValue& newValue) const {
 }
 
 void AutoConfigItem::setString(const std::string &newValue) {
-    setValue(std::make_pair(ConfigValueType::String, newValue));
+    std::pair<ConfigValueType, ConfigValue> v_n ;
+    v_n.first = ConfigValueType::String;
+    v_n.second = newValue;
+    setValue(v_n);
 }
 
 void AutoConfigItem::setInt(int newValue) {

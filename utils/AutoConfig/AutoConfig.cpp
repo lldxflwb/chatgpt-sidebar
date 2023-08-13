@@ -5,6 +5,7 @@
 #include "AutoConfig.h"
 #include <fstream>
 
+AutoConfig::StoragePolicy storagePolicy = AutoConfig::StoragePolicy::SingleFile;
 
 AutoConfig::AutoConfig(const std::string &fileName, StoragePolicy _storagePolicy, AutoConfig *_parent)
 : fileName(fileName) ,parent(_parent){
@@ -44,12 +45,7 @@ AutoConfigItem * AutoConfig::addItems(const std::string& key, const ConfigValue 
     if(items.find(key) == items.end()) {
         auto item = new AutoConfigItem();
         item->setValue(value);
-        item->addObserver([this](const ConfigValue& newValue) {
-            this->valueChange();
-        });
-        auto * currItem = new AutoConfigItem(*item);
-        items[key] = currItem;
-        return currItem;
+        return addItems(key, item);
     }
     return items[key];
 }
@@ -109,15 +105,31 @@ void AutoConfig::ReadCurrConfigFromJson(nlohmann::json j) {
         throw std::runtime_error("Failed to open file " + fileName);
     }
     for (const auto& [key, value] : j["values"].items()) {
-        if (value.is_number_integer()) {
-            addItems(key, value.get<int>());
-        } else if (value.is_number_float()) {
-            addItems(key,value.get<double>());
-        } else if (value.is_string()) {
-            addItems(key, value.get<std::string>());
+        // 如果key已经存在，则替换
+        if(items.find(key) != items.end()){
+            if (value.is_number_integer()) {
+                items[key]->setValue(value.get<int>());
+            } else if (value.is_number_float()) {
+                items[key]->setValue(value.get<double>());
+            } else if (value.is_string()) {
+                items[key]->setValue(value.get<std::string>());
+            }
+            else{
+                throw std::runtime_error("Failed to open file " + fileName);
+            }
+            continue;
         }
         else{
-            throw std::runtime_error("Failed to open file " + fileName);
+            if (value.is_number_integer()) {
+                addItems(key, value.get<int>());
+            } else if (value.is_number_float()) {
+                addItems(key,value.get<double>());
+            } else if (value.is_string()) {
+                addItems(key, value.get<std::string>());
+            }
+            else{
+                throw std::runtime_error("Failed to open file " + fileName);
+            }
         }
     }
 }
@@ -219,4 +231,13 @@ void AutoConfig::EventDeal(AutoConfig::ConfigEvent configEvent) {
             this->saveFile();
             break;
     }
+}
+
+AutoConfigItem *AutoConfig::addItems(const std::string &key, AutoConfigItem *item) {
+    item->addObserver([this](const ConfigValue& newValue) {
+        this->valueChange();
+    });
+    auto * currItem = new AutoConfigItem(*item);
+    items[key] = currItem;
+    return currItem;
 }

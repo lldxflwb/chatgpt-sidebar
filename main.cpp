@@ -11,8 +11,9 @@ int main(int argc, char *argv[])
     // 让用户数据可以输出到日志
 //    logSysInit("log.txt");
     MainWindow w;
-    w.hide();
-//    TestFunc t;
-//    t.TestProxyConfigWidgetPublic();
+//    w.hide();
+    TestFunc t;
+    t.TestProxyConfigWidgetPublic();
+    t.TestChatGptConfig();
     return a.exec();
 }

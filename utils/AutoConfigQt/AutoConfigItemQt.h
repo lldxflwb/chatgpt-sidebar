@@ -8,8 +8,6 @@
 
 class AutoConfigItemQt : public AutoConfigItem {
 public:
-    using AutoConfigItem::AutoConfigItem;
-
     void setValue(const QString& value);
     QString getValueAsQString() const;
 };

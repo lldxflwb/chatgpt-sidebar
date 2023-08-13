@@ -8,7 +8,7 @@
 #include <QNetworkReply>
 #include <QNetworkReply>
 #include <QJsonArray>
-#include "utils/Proxy/ProxyManager.h"
+#include "utils/MySetting/Proxy/ProxyManager.h"
 
 extern ProxyManager * proxyManager;
 

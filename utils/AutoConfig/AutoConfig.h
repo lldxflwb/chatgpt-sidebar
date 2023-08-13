@@ -42,6 +42,7 @@ public:
     void readFromSingleFile();
     // addItems() 新增
     AutoConfigItem * addItems(const std::string& key, const ConfigValue & value);
+    AutoConfigItem * addItems(const std::string& key, AutoConfigItem * item );
     bool fileIsExist();
     void addChild(AutoConfig * child);
     // 发布订阅

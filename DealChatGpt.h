@@ -9,7 +9,7 @@
 #include <QNetworkProxy>
 #include <QSettings>
 #include "interface/GetTextInterface.h"
-#include "utils/Proxy/ProxyAction.h"
+#include "utils/MySetting/Proxy/ProxyAction.h"
 class DealChatGpt : public GetTextInterface{
 public:
     DealChatGpt();

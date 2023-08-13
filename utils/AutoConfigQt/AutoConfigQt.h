@@ -16,7 +16,7 @@ public:
             StoragePolicy _stroagePolicy = StoragePolicy::SingleFile,
             AutoConfigQt *_parent = nullptr);
 
-    void addQString(const std::string& key, const QString& value);
+    AutoConfigItemQt * addQString(const std::string& key, const QString& value);
     QString getItemAsQString(const QString & key) ;
     AutoConfigItemQt * getItemQt(const QString & key) ;
 };
