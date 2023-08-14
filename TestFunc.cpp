@@ -4,8 +4,7 @@
 
 #include "TestFunc.h"
 
-#include "utils/MySetting/Proxy/ProxyConfigWidgetPublic.h"
-#include "utils/MySetting/Proxy/ProxyActionHttp.h"
+
 #include "utils/MySetting/KeyInfo/ChatGptKey.h"
 #include "ChatEngine/ChatGptEngine/OpenAiEngine.h"
 
@@ -15,9 +14,9 @@
 #include "utils/MySetting/Panel/EnginePanel.h"
 
 void TestFunc::TestProxyConfigWidgetPublic() {
-    auto pconfig = std::make_shared<ProxyActionHttp::ProxyConfigHttp>("","6863","","");
-    ProxyConfigWidgetPublic * p = new ProxyConfigWidgetPublic(pconfig);
-    p->show();
+//    auto pconfig = std::make_shared<ProxyActionHttp::ProxyConfigHttp>("","6863","","");
+//    ProxyConfigWidgetPublic * p = new ProxyConfigWidgetPublic(pconfig);
+//    p->show();
 }
 
 void TestFunc::TestChatGptConfig() {

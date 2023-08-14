@@ -8,6 +8,7 @@
 #include "linebar.h"
 #include "DealChatGpt.h"
 #include "utils/settingsdialog.h"
+#include "utils/MySetting/SettingPanel.h"
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -25,7 +26,7 @@ public:
     LineBar * bar;
     QString cache_text;
     SettingsDialog * setting_ui;
-
+    SettingPanel * settingPanel;
 public slots:
     void iconLabelClicked();
 

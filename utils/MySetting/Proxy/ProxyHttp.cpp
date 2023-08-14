@@ -28,3 +28,33 @@ ProxyHttp::ProxyHttp(QString ip, int port ,
     layout->addLayout(this->password);
     httpConfig = this->autoConfigQt;
 }
+
+void ProxyHttp::OnProxy() {
+    UnUseProxy();
+    QNetworkProxy proxy;
+    proxy.setType(QNetworkProxy::HttpProxy);
+    proxy.setHostName(autoConfigQt->getItemAsQString("ip"));
+    proxy.setPort(autoConfigQt->getItemAsQString("port").toInt());
+    proxy.setUser(autoConfigQt->getItemAsQString("username"));
+    proxy.setPassword(autoConfigQt->getItemAsQString("password"));
+    UseProxy(proxy);
+}
+
+void ProxyHttp::OnStart() {
+    this->OnProxySubscriberId = autoConfigQt->RegisterObserver(
+            [this](const AutoConfig& config, ConfigEvent event) {
+        if(ConfigEvent::EventItemValueChange == event){
+            this->OnProxy();
+        }
+    });
+    this->OnProxy();
+}
+
+void ProxyHttp::OnEnd() {
+    if (this->OnProxySubscriberId == -1)
+    {
+        return;
+    }
+    autoConfigQt->RemoveObserver(this->OnProxySubscriberId);
+    this->OnProxySubscriberId = -1;
+}

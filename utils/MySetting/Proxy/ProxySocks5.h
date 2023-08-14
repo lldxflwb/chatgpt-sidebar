@@ -7,13 +7,15 @@
 
 #include "utils/MySetting/ConfigQWidget.h"
 #include "utils/Ui/layout/UiImport.h"
-class ProxySocks5 :public ConfigQWidget{
+#include "ProxyInterface.h"
+class ProxySocks5 :public ConfigQWidget,public ProxyInterface{
 public:
     LabelEditLine * ip;
     LabelEditLine * port;
     LabelEditLine * username;
     LabelEditLine * password;
     QVBoxLayout * layout;
+    SubscriberId OnProxySubscriberId = -1 ;
     ProxySocks5(
             QString ip = "" ,
             int port = 7890 ,
@@ -21,6 +23,12 @@ public:
             QString password = "" ,
             QWidget *parent = nullptr,
             const Qt::WindowFlags &f = Qt::WindowFlags ());
+
+    void OnProxy() override;
+
+    void OnStart() override;
+
+    void OnEnd() override;
 };
 
 

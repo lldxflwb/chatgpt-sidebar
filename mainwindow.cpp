@@ -14,10 +14,8 @@
 #include <QJsonArray>
 #include <QSettings>
 #include <QMouseEvent>
-#include "utils/MySetting/Proxy/ProxyManager.h"
 
 extern QNetworkAccessManager * networkManager;
-extern ProxyManager * proxyManager;
 
 MainWindow *MainWindow::instance = nullptr;
 QObject * globalWindow;
@@ -26,9 +24,10 @@ QTextEdit * outPutTextArea;
 
 MainWindow::MainWindow(QWidget *parent)
         : QMainWindow(parent), clicked_button(false), ui(new Ui::MainWindow) {
-    proxyManager=new ProxyManager();
     setting_ui = new SettingsDialog();
     setting_ui->show();
+    this->settingPanel = SettingPanel::GetInstance();
+    this->settingPanel->autoConfigQt->readFile();
     this->hide();
     aiNetwork = new QWidget();
     qDebug() << "开始初始化窗口";
@@ -55,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(iconLabel, &ClickableLabel::clicked, this, &MainWindow::iconLabelClicked);
     // 在其他地方连接自定义信号 mySignal() 和槽函数 mySlot()
     QObject::connect(chat, &ChatgptBase::textChanged, this, &MainWindow::ShowBar);
-    setupNetworkManager();
+//    setupNetworkManager();
     ChangeMode(ChatgptBase::UseMode::CCMode);
     connect(setting_ui, &SettingsDialog::SettingChangedSend, [this](QSettings *settings) {
         this->OnSettingChanged(settings);

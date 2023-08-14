@@ -7,6 +7,7 @@
 
 #include "utils/MySetting/ConfigQWidget.h"
 #include "utils/Ui/layout/UiImport.h"
+#include "utils/MySetting/Proxy/ProxyInterface.h"
 enum ProxyType{
     None,
     HTTP,
@@ -14,7 +15,25 @@ enum ProxyType{
 };
 class ProxyPanel : public ConfigQWidget{
 public:
-
+    QVBoxLayout * layout;
+    LabelComboBox * proxyType,*defaultGptProxy;
+    ProxyInterface * currentProxy;
+    ProxyType currentProxyType;
+    std::map<ProxyType,ProxyInterface*> proxyMap;
+    std::map<ProxyType,ConfigQWidget*> widgetMap;
+    ProxyPanel(
+            ProxyType proxyType = ProxyType::None,
+            QWidget *parent = nullptr,
+            const Qt::WindowFlags &f = Qt::WindowFlags ());
+    void OnProxyTypeChange(ProxyType proxyType);
+    // 单例模式
+    static ProxyPanel * GetInstance(){
+        static ProxyPanel * proxyPanel = nullptr;
+        if(proxyPanel == nullptr){
+            proxyPanel = new ProxyPanel();
+        }
+        return proxyPanel;
+    }
 };
 
 

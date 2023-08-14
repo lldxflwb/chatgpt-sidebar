@@ -11,7 +11,7 @@ AutoConfig::AutoConfig(const std::string &fileName, StoragePolicy _storagePolicy
 : fileName(fileName) ,parent(_parent){
     if(_parent){
         _parent->addChild(this);
-        this->addObserver([this](const AutoConfig& parent, ConfigEvent configEvent){
+        this->RegisterObserver([this](const AutoConfig &parent, ConfigEvent configEvent) {
             this->EventDeal(configEvent);
         });
     }
@@ -56,20 +56,21 @@ bool AutoConfig::fileIsExist(){
 }
 
 void AutoConfig::addChild(AutoConfig *child) {
+    child->RegisterObserver([this](const AutoConfig &child, ConfigEvent configEvent) {
+        switch(configEvent){
+            case ConfigEvent::EventItemValueChange:
+            case ConfigEvent::EventSonValueChange:
+                this->Notify(*this, ConfigEvent::EventSonValueChange);
+                break;
+            default:
+                break;
+        }
+    });
     this->children.push_back(child);
 }
 
-void AutoConfig::addObserver(const ObserversFunc &observer) {
-    observers.push_back(observer);
-}
-
-void AutoConfig::notify(const AutoConfig &value, ConfigEvent configEvent) const {
-    for (const auto& observer : observers) {
-        observer(value,configEvent);
-    }
-}
-
 void AutoConfig::valueChange() {
+    this->Notify(*this, ConfigEvent::EventItemValueChange);
     this->saveFile();
 }
 
@@ -229,7 +230,7 @@ void AutoConfig::saveFile() {
     }
 }
 
-void AutoConfig::EventDeal(AutoConfig::ConfigEvent configEvent) {
+void AutoConfig::EventDeal(ConfigEvent configEvent) {
     switch (configEvent) {
         case ConfigEvent::EventRead:
             this->readFile();

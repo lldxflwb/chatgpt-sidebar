@@ -11,4 +11,5 @@ ConfigQWidget::ConfigQWidget(
 void ConfigQWidget::RegisterFatherConfig(AutoConfigQt * _fatherConfig){
     _fatherConfig->addChild(autoConfigQt);
     autoConfigQt->parent=_fatherConfig;
+    this->hide();
 }

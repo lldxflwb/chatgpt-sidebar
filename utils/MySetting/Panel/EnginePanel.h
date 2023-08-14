@@ -9,7 +9,7 @@
 #include "utils/Ui/Layout/labelComboBox.h"
 #include "utils/MySetting/KeyInfo/ChatGptKey.h"
 #include "ChatEngine/ChatInterface.h"
-#include "utils/MySetting/proxy/ProxyConfig.h"
+#include "ProxyPanel.h"
 enum EngineType{
     Baidu,
     ChatGpt
@@ -22,7 +22,6 @@ class EnginePanel : public ConfigQWidget{
     LabelComboBox * engineType;
     QVBoxLayout * layout;
     void initEngine();
-    std::shared_ptr<ProxyConfig> lastProxy;
 public:
     QString cacheText;
     EnginePanel(
@@ -30,6 +29,14 @@ public:
             QWidget *parent = nullptr,
             const Qt::WindowFlags &f = Qt::WindowFlags ());
     ChatInterface * GetEngine();
+    // 单例模式
+    static EnginePanel * GetInstance(){
+        static EnginePanel * instance = nullptr;
+        if(instance == nullptr){
+            instance = new EnginePanel();
+        }
+        return instance;
+    }
 };
 
 

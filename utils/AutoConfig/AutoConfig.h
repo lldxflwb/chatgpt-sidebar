@@ -9,15 +9,20 @@
 #include <string>
 #include <unordered_map>
 #include <nlohmann/json.hpp>
+#include "utils/PubSub.h"
 
 typedef std::unordered_map<std::string, AutoConfigItem *> ConfigValues;
+class AutoConfig;
+enum class ConfigEvent{
+    EventSave,
+    EventRead,
+    EventItemValueChange,
+    EventSonValueChange,
+};
+typedef Publisher<const AutoConfig&, ConfigEvent> AutoConfigPublisher;
 
-class AutoConfig {
+class AutoConfig : public AutoConfigPublisher{
 public:
-    enum class ConfigEvent{
-        EventSave,
-        EventRead
-    };
     typedef std::function<void(const AutoConfig&,ConfigEvent)> ObserversFunc;
     enum class StoragePolicy{
         SingleFile,
@@ -26,7 +31,7 @@ public:
 private:
     ConfigValues items;
     std::string fileName;
-    std::vector<ObserversFunc> observers;
+//    std::vector<ObserversFunc> observers;
     StoragePolicy storagePolicy;
 public:
     AutoConfig * parent;
@@ -46,14 +51,12 @@ public:
     bool fileIsExist();
     void addChild(AutoConfig * child);
     // 发布订阅
-    void addObserver(const ObserversFunc& observer);
     nlohmann::json ObjectToJson();
     nlohmann::json CurrObjectToJson();
     void ReadConfigFromJson(nlohmann::json j);
     void ReadCurrConfigFromJson(nlohmann::json j);
     void EventDeal(ConfigEvent configEvent);
 private:
-    void notify(const AutoConfig &value, ConfigEvent configEvent) const;
     void valueChange();
 };
 

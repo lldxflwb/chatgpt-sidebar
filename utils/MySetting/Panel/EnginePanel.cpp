@@ -7,12 +7,10 @@
 #include "utils/MySetting/KeyInfo/ChatGptKey.h"
 #include "ChatEngine/BaiduEngine/BaiduEngine.h"
 #include "ChatEngine/ChatGptEngine/OpenAiEngine.h"
-#include "utils/MySetting/Proxy/ProxyManager.h"
 #include <QTextEdit>
 extern AutoConfig::StoragePolicy storagePolicy;
 extern QTextEdit * outPutTextArea;
-extern ProxyManager * proxyManager;
-AutoConfig * pannelConfig;
+AutoConfig * engineConfig;
 
 
 EnginePanel::EnginePanel(
@@ -21,7 +19,6 @@ EnginePanel::EnginePanel(
         const Qt::WindowFlags &f )
         : ConfigQWidget(new AutoConfigQt("EnginePanel.json",storagePolicy), parent, f){
     cacheText = "";
-    this->lastProxy = proxyManager->GetProxyConfig();
     auto engineTypeItem = autoConfigQt->addItems("engineType",engineType);
     this->engineConfigMap[EngineType::Baidu] = new BaiduKey();
     this->engineMap[EngineType::Baidu] = new BaiduEngine();
@@ -45,26 +42,29 @@ EnginePanel::EnginePanel(
     this->layout->addWidget(this->engineConfigMap[EngineType::ChatGpt]);
     this->currentEngine->show();
     this->setLayout(this->layout);
-    if( EngineType::ChatGpt == this->engineTypeValue && ProxyConfig::ProxyType::None != proxyManager->GetProxyType()){
-        this->lastProxy = proxyManager->GetProxyConfig();
-        proxyManager->UninstallProxy();
+    if(  ProxyPanel::GetInstance()->currentProxy && EngineType::ChatGpt != engineType){
+        ProxyPanel::GetInstance()->autoConfigQt->getItem("proxyType")->setValue(ProxyType::None);
     }
     engineTypeItem->addObserver([this](const ConfigValue& value){
+        auto proxyPanel = ProxyPanel::GetInstance();
         EngineType engineType = (EngineType)std::get<int>(value);
         this->currentEngine->hide();
         this->currentEngine = this->engineConfigMap[engineType];
-        if(this->engineTypeValue == EngineType::ChatGpt){
-            this->lastProxy = proxyManager->GetProxyConfig();
-            proxyManager->UninstallProxy();
-        }
-        if(engineType == EngineType::ChatGpt && this->lastProxy){
-            proxyManager->SetProxyConfig(this->lastProxy);
-        }
         this->currentEngine->show();
         this->engineTypeValue = engineType;
+        AutoConfigItem * v = proxyPanel->proxyType->value;
+        if(this->engineTypeValue == EngineType::ChatGpt){
+            // use proxy default
+            v->setValue(
+                    proxyPanel->defaultGptProxy->value->getValue()
+            );
+        }else{
+            v->setValue(ProxyType::None);
+        }
     });
     this->autoConfigQt->readFile();
     this->initEngine();
+    engineConfig= this->autoConfigQt;
 }
 
 ChatInterface *EnginePanel::GetEngine() {

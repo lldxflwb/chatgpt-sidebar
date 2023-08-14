@@ -8,9 +8,7 @@
 #include <QNetworkReply>
 #include <QNetworkReply>
 #include <QJsonArray>
-#include "utils/MySetting/Proxy/ProxyManager.h"
 
-extern ProxyManager * proxyManager;
 
 QNetworkAccessManager * networkManager;
 
@@ -23,14 +21,14 @@ void DealChatGpt::TalkWithGpt(QString text, QTextEdit *out) {
 }
 
 void DealChatGpt::setupNetworkManager(QObject *parent ) {
-    proxyManager->SetSocks5Proxy(
-            m_setting->value("ip").toString(),
-            m_setting->value("port").toString().toInt());
+//    proxyManager->SetSocks5Proxy(
+//            m_setting->value("ip").toString(),
+//            m_setting->value("port").toString().toInt());
 }
 
 void DealChatGpt::OnSettingChanged(QSettings *settings) {
-    proxyManager->SetSocks5Proxy(
-            m_setting->value("ip").toString(),
-            m_setting->value("port").toString().toInt());
+//    proxyManager->SetSocks5Proxy(
+//            m_setting->value("ip").toString(),
+//            m_setting->value("port").toString().toInt());
 }
 

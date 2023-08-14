@@ -10,7 +10,7 @@
 #include <QLabel>
 #include "buttonsettingborad.h"
 #include "utils/MySetting/Panel/EnginePanel.h"
-
+#include "utils/MySetting/Panel/ProxyPanel.h"
 
 
 namespace Ui {
@@ -37,6 +37,7 @@ public:
     ButtonList * button_list;
     ButtonSettingBorad * button_setting_broad;
     EnginePanel * engine_panel;
+    ProxyPanel * proxy_panel;
 
 private:
     Ui::SettingsDialog *ui;
