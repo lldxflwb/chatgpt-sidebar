@@ -11,12 +11,8 @@
 class ConfigQWidget : public QWidget{
 public:
     AutoConfigQt * autoConfigQt;
-    ConfigQWidget(AutoConfigQt *autoConfigQt ,QWidget *parent = nullptr, const Qt::WindowFlags &f = Qt::WindowFlags())
-    : QWidget(parent, f), autoConfigQt(autoConfigQt) {};
-    void RegisterFatherConfig(AutoConfigQt * _fatherConfig){
-        _fatherConfig->addChild(autoConfigQt);
-        autoConfigQt->parent=_fatherConfig;
-    }
+    ConfigQWidget(AutoConfigQt *autoConfigQt ,QWidget *parent = nullptr, const Qt::WindowFlags &f = Qt::WindowFlags());
+    void RegisterFatherConfig(AutoConfigQt * _fatherConfig);
 };
 
 
