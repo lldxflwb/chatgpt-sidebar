@@ -92,8 +92,8 @@ void MainWindow::TalkWithChatgpt(QString text, QString prompt) {
 }
 
 void MainWindow::fetchAnswerFromGPT3(const QString &text) {
-    this->setting_ui->engine_panel->cacheText ="";
-    this->setting_ui->engine_panel->GetEngine()->OnInput(text);
+    this->settingPanel->engine_panel->cacheText="";
+    this->settingPanel->engine_panel->GetEngine()->OnInput(text);
     MainWindow::getInstance()->ui->out_put_text_2->moveCursor(QTextCursor::End);
     this->show();
     this->ui->i_2->setText(text);
