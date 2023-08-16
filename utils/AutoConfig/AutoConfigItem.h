@@ -15,7 +15,7 @@
 
 using ConfigValue = std::variant<int, double, std::string>;
 
-enum class ConfigValueType {
+enum ConfigValueType {
     Undefined,
     Int,
     Double,

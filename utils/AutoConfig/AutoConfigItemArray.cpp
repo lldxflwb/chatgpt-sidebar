@@ -85,12 +85,14 @@ AutoConfigItem *AutoConfigItemArray::getItem(const ConfigValue &item) {
 }
 
 nlohmann::json AutoConfigItemArray::toJson() {
-    nlohmann::json j = nlohmann::json::array();
+    nlohmann::json j,arr = nlohmann::json::array();
     for(auto it : this->items){
         nlohmann::json item;
         it->toJson(item,"value");
-        j.push_back(item["value"]);
+        arr.push_back(item["value"]);
     }
+    j["items"]=arr;
+    j["type"]=type;
     return j;
 }
 

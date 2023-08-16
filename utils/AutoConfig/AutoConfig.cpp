@@ -9,6 +9,8 @@ AutoConfig::StoragePolicy storagePolicy = AutoConfig::StoragePolicy::SingleFile;
 
 AutoConfig::AutoConfig(const std::string &fileName, StoragePolicy _storagePolicy, AutoConfig *_parent)
 : fileName(fileName) ,parent(_parent){
+    items.clear();
+    arrays.clear();
     if(_parent){
         _parent->addChild(this);
         this->RegisterObserver([this](const AutoConfig &parent, ConfigEvent configEvent) {
@@ -90,6 +92,9 @@ nlohmann::json AutoConfig::CurrObjectToJson() {
     for( auto & item : this->items){
         item.second->toJson(curr,item.first);
     }
+    for( auto & item : this->arrays){
+        curr[item.first]=item.second->toJson();
+    }
     j["name"]=this->fileName;
     j["values"]=curr;
     return j;
@@ -108,8 +113,19 @@ void AutoConfig::ReadCurrConfigFromJson(nlohmann::json j) {
         }
         else{
             AutoConfigItem * item;
-            item->toJson(j["values"],key);
+            item->fromJson(j["values"],key);
             this->addItems(key,item);
+        }
+    }
+    for (const auto& [key,value] : j["arrays"].items()){
+        if( arrays.find(key) != arrays.end() ){
+            arrays[key]->fromJson(j["arrays"]);
+            continue;
+        }
+        else{
+            ConfigValueType t = static_cast<ConfigValueType>(value["type"].get<int>());
+            createArray(key,t);
+            arrays[key]->fromJson(value);
         }
     }
 }
@@ -235,4 +251,23 @@ AutoConfigItem *AutoConfig::addItems(const std::string &key, AutoConfigItem *ite
     auto * currItem = new AutoConfigItem(*item);
     items[key] = currItem;
     return currItem;
+}
+
+AutoConfigItemArray *AutoConfig::createArray(const std::string &key,ConfigValueType type) {
+    auto item = new AutoConfigItemArray(type);
+    item->RegisterObserver([this,item](
+            AutoConfigItemArray * array,
+            AutoConfigItem * item1,
+            AutoConfigItemArrayEvent event,
+            ConfigValueType type
+            ) {
+        this->valueChange();
+    });
+}
+
+AutoConfigItemArray *AutoConfig::getArray(const std::string &key) {
+    if (arrays.find(key) != arrays.end()) {
+        return arrays[key];
+    }
+    return nullptr;
 }

@@ -32,6 +32,7 @@ public:
     };
 private:
     ConfigValues items;
+    ConfigArrays arrays;
     std::string fileName;
 //    std::vector<ObserversFunc> observers;
     StoragePolicy storagePolicy;
@@ -50,6 +51,8 @@ public:
     // addItems() 新增
     AutoConfigItem * addItems(const std::string& key, const ConfigValue & value);
     AutoConfigItem * addItems(const std::string& key, AutoConfigItem * item );
+    AutoConfigItemArray * createArray(const std::string& key,ConfigValueType type);
+    AutoConfigItemArray * getArray(const std::string& key);
     bool fileIsExist();
     void addChild(AutoConfig * child);
     // 发布订阅
