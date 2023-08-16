@@ -45,20 +45,20 @@ EnginePanel::EnginePanel(
     if(  ProxyPanel::GetInstance()->currentProxy && EngineType::ChatGpt != engineType){
         ProxyPanel::GetInstance()->autoConfigQt->getItem("proxyType")->setValue(ProxyType::None);
     }
-    engineTypeItem->addObserver([this](const ConfigValue& value){
+    engineTypeItem->RegisterObserver([this](const ConfigValue &value,ConfigValueType type) {
         auto proxyPanel = ProxyPanel::GetInstance();
-        EngineType engineType = (EngineType)std::get<int>(value);
+        EngineType engineType = (EngineType) std::get<int>(value);
         this->currentEngine->hide();
         this->currentEngine = this->engineConfigMap[engineType];
         this->currentEngine->show();
         this->engineTypeValue = engineType;
-        AutoConfigItem * v = proxyPanel->proxyType->value;
-        if(this->engineTypeValue == EngineType::ChatGpt){
+        AutoConfigItem *v = proxyPanel->proxyType->value;
+        if (this->engineTypeValue == EngineType::ChatGpt) {
             // use proxy default
             v->setValue(
                     proxyPanel->defaultGptProxy->value->getValue()
             );
-        }else{
+        } else {
             v->setValue(ProxyType::None);
         }
     });

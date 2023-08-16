@@ -53,8 +53,8 @@ const Qt::WindowFlags &f)
     this->layout->addWidget(proxySocks5);
     this->layout->addWidget(proxyHttp);
     this->setLayout(this->layout);
-    this->proxyType->value->addObserver([this](const ConfigValue& value){
-        this->OnProxyTypeChange((ProxyType)std::get<int>(value));
+    this->proxyType->value->RegisterObserver([this](const ConfigValue &value,ConfigValueType type) {
+        this->OnProxyTypeChange((ProxyType) std::get<int>(value));
     });
     pannelConfig = autoConfigQt;
 }

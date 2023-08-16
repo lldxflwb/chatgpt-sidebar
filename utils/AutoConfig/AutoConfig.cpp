@@ -88,12 +88,7 @@ nlohmann::json AutoConfig::ObjectToJson() {
 nlohmann::json AutoConfig::CurrObjectToJson() {
     nlohmann::json j,curr;
     for( auto & item : this->items){
-        std::string key = item.first;
-        auto& itemValue = *item.second;
-        const auto& value = itemValue.getValue();
-        std::visit([&](const auto& val) {
-            curr[key] = val;
-        }, value);
+        item.second->toJson(curr,item.first);
     }
     j["name"]=this->fileName;
     j["values"]=curr;
@@ -107,30 +102,14 @@ void AutoConfig::ReadCurrConfigFromJson(nlohmann::json j) {
     }
     for (const auto& [key, value] : j["values"].items()) {
         // 如果key已经存在，则替换
-        if(items.find(key) != items.end()){
-            if (value.is_number_integer()) {
-                items[key]->setValue(value.get<int>());
-            } else if (value.is_number_float()) {
-                items[key]->setValue(value.get<double>());
-            } else if (value.is_string()) {
-                items[key]->setValue(value.get<std::string>());
-            }
-            else{
-                throw std::runtime_error("Failed to open file " + fileName);
-            }
+        if(items.find(key) != items.end() ){
+            items[key]->fromJson(j["values"],key);
             continue;
         }
         else{
-            if (value.is_number_integer()) {
-                addItems(key, value.get<int>());
-            } else if (value.is_number_float()) {
-                addItems(key,value.get<double>());
-            } else if (value.is_string()) {
-                addItems(key, value.get<std::string>());
-            }
-            else{
-                throw std::runtime_error("Failed to open file " + fileName);
-            }
+            AutoConfigItem * item;
+            item->toJson(j["values"],key);
+            this->addItems(key,item);
         }
     }
 }
@@ -238,11 +217,19 @@ void AutoConfig::EventDeal(ConfigEvent configEvent) {
         case ConfigEvent::EventSave:
             this->saveFile();
             break;
+        case ConfigEvent::EventItemValueChange:
+//            this->saveFile();
+            break;
+        case ConfigEvent::EventSonValueChange:
+//            this->saveFile();
+            break;
+        default:
+            break;
     }
 }
 
 AutoConfigItem *AutoConfig::addItems(const std::string &key, AutoConfigItem *item) {
-    item->addObserver([this](const ConfigValue& newValue) {
+    item->RegisterObserver([this,item](const ConfigValue &newValue,ConfigValueType type) {
         this->valueChange();
     });
     auto * currItem = new AutoConfigItem(*item);

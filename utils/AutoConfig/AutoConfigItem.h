@@ -9,16 +9,23 @@
 #include <string>
 #include <unordered_map>
 #include <functional>
+#include "utils/PubSub.h"
 #include <vector>
+#include "nlohmann/json.hpp"
 
 using ConfigValue = std::variant<int, double, std::string>;
+
 enum class ConfigValueType {
+    Undefined,
     Int,
     Double,
     String
 };
 
-class AutoConfigItem {
+typedef Publisher<const ConfigValue &, ConfigValueType> AutoConfigItemPublisher;
+
+
+class AutoConfigItem : public AutoConfigItemPublisher{
 private:
     ConfigValue value;
     ConfigValueType type;
@@ -32,11 +39,10 @@ public:
     virtual void setDouble(double newValue);
     virtual std::pair<ConfigValueType, const ConfigValue> getValueAsPair() const;
     virtual ConfigValue getValue() const;
-    void addObserver(const std::function<void(const ConfigValue&)>& observer);
-private:
-    void notify(const ConfigValue &value) const;
+    // 序列化 反序列化
+    void toJson(nlohmann::json & item,std::string key);
+    void fromJson(nlohmann::json & item,std::string key);
 };
-
 
 
 #endif //CHATGPT_SIDEBAR_AUTOCONFIGITEM_H

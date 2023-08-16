@@ -23,15 +23,16 @@ LabelEditLine::LabelEditLine(
     this->addWidget(label);
     this->addWidget(edit);
     this->value=static_cast<AutoConfigItemQt*>(value);
-    connect(edit,&QLineEdit::textChanged,[=](const QString& text){
+    connect(edit,&QLineEdit::editingFinished,[this](){
+        auto text = this->edit->text();
         qDebug() << "text changed" << text;
         this->ChangeValue = text.toStdString();
         this->value->setValue(text);
     });
-    this->value->addObserver([=](const ConfigValue& value){
+    this->value->RegisterObserver([=](const ConfigValue &value,ConfigValueType type) {
         qDebug() << "value changed" << std::get<std::string>(value);
         std::string currValue = std::get<std::string>(value);
-        if(this->ChangeValue!= currValue){
+        if (this->ChangeValue != currValue) {
             this->edit->setText(QString::fromStdString(currValue));
         }
     });

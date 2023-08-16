@@ -10,8 +10,10 @@
 #include <unordered_map>
 #include <nlohmann/json.hpp>
 #include "utils/PubSub.h"
+#include "AutoConfigItemArray.h"
 
 typedef std::unordered_map<std::string, AutoConfigItem *> ConfigValues;
+typedef std::unordered_map<std::string, AutoConfigItemArray *> ConfigArrays;
 class AutoConfig;
 enum class ConfigEvent{
     EventSave,
@@ -23,7 +25,7 @@ typedef Publisher<const AutoConfig&, ConfigEvent> AutoConfigPublisher;
 
 class AutoConfig : public AutoConfigPublisher{
 public:
-    typedef std::function<void(const AutoConfig&,ConfigEvent)> ObserversFunc;
+//    typedef std::function<void(const AutoConfig&,ConfigEvent)> ObserversFunc;
     enum class StoragePolicy{
         SingleFile,
         MultiFile

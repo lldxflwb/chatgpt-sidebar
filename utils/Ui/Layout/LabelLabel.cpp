@@ -12,7 +12,7 @@ LabelLabel::LabelLabel(const QString &labelText, AutoConfigItem *value, QWidget 
     this->addWidget(key_label);
     this->addWidget(value_label);
     this->value=static_cast<AutoConfigItemQt*>(value);
-    this->value->addObserver([=](const ConfigValue& value){
+    this->value->RegisterObserver([=](const ConfigValue &value,ConfigValueType type) {
         qDebug() << "value changed" << std::get<std::string>(value);
         std::string currValue = std::get<std::string>(value);
         this->value_label->setText(QString::fromStdString(currValue));

@@ -26,15 +26,15 @@ LabelComboBox::LabelComboBox(
         this->ChangeValue = number;
         this->value->setInt(number);
     });
-    this->value->addObserver([=](const ConfigValue& value){
+    this->value->RegisterObserver([=](const ConfigValue &value,ConfigValueType type) {
         qDebug() << "value changed" << std::get<int>(value);
         int currValue = std::get<int>(value);
-        if(this->ChangeValue!= currValue){
+        if (this->ChangeValue != currValue) {
             // loop comboBoxContentData to find the index of currValue
             for (int i = 0; i < this->comboBoxContentData.size(); ++i) {
-                if(this->comboBoxContentData[i].second.toInt()==currValue){
+                if (this->comboBoxContentData[i].second.toInt() == currValue) {
                     this->comboBox->setCurrentIndex(i);
-                    return ;
+                    return;
                 }
             }
         }

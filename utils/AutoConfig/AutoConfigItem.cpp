@@ -8,7 +8,7 @@ void AutoConfigItem::setValue(std::pair<ConfigValueType, ConfigValue> newValue) 
     if (value != newValue.second) {
         value = newValue.second;
         type = newValue.first;
-        notify(newValue.second);
+        Notify(newValue.second, this->type);
     }
 }
 
@@ -16,15 +16,15 @@ ConfigValue AutoConfigItem::getValue() const {
     return value;
 }
 
-void AutoConfigItem::addObserver(const std::function<void(const ConfigValue&)>& observer) {
-    observers.push_back(observer);
-}
-
-void AutoConfigItem::notify(const ConfigValue& newValue) const {
-    for (const auto& observer : observers) {
-        observer(newValue);
-    }
-}
+//SubscriberId AutoConfigItem::RegisterObserver(const std::function<void(const ConfigValue&)>& observer) {
+//    observers.push_back(observer);
+//}
+//
+//void AutoConfigItem::Notify(const ConfigValue &value, ConfigValueType valueType) const {
+//    for (const auto& observer : observers) {
+//        observer(value);
+//    }
+//}
 
 void AutoConfigItem::setString(const std::string &newValue) {
     std::pair<ConfigValueType, ConfigValue> v_n ;
@@ -60,5 +60,28 @@ void AutoConfigItem::setValue(const ConfigValue &newValue) {
             break;
         default:
             assert("Change Index to enum Type ConfigValueType error");
+    }
+}
+
+void AutoConfigItem::toJson(nlohmann::json & item,std::string key) {
+    std::visit([key,&item](auto& v){
+        item[key] = v;
+    },this->value);
+}
+
+void AutoConfigItem::fromJson(nlohmann::json & item,std::string key) {
+    if (item.find(key) == item.end()){
+        return;
+    }
+    auto value = item[key];
+    if (value.is_number_integer()) {
+        this->setValue(std::make_pair(ConfigValueType::Int, value.get<int>()));
+    } else if (value.is_number_float()) {
+        this->setValue(std::make_pair(ConfigValueType::Double, value.get<double>()));
+    } else if (value.is_string()) {
+        this->setValue(std::make_pair(ConfigValueType::String, value.get<std::string>()));
+    }
+    else{
+        throw std::runtime_error(key + " is not a valid type");
     }
 }
