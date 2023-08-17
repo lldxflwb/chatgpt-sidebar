@@ -15,47 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2" stretch="9,1">
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout" stretch="2,10">
-     <item>
-      <layout class="QFormLayout" name="formLayout">
-       <property name="labelAlignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_ip">
-         <property name="text">
-          <string>IP:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QLineEdit" name="edit_ip"/>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_port">
-         <property name="text">
-          <string>port:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="edit_port"/>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_key">
-         <property name="text">
-          <string>key:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QLineEdit" name="edit_key"/>
-       </item>
-      </layout>
-     </item>
+    <layout class="QVBoxLayout" name="verticalLayout" stretch="10">
      <item>
       <widget class="ButtonSettingBorad" name="button_setting_broad" native="true"/>
      </item>

@@ -45,7 +45,10 @@ EnginePanel::EnginePanel(
     if(  ProxyPanel::GetInstance()->currentProxy && EngineType::ChatGpt != engineType){
         ProxyPanel::GetInstance()->autoConfigQt->getItem("proxyType")->setValue(ProxyType::None);
     }
-    engineTypeItem->RegisterObserver([this](const ConfigValue &value,ConfigValueType type) {
+    engineTypeItem->RegisterObserver([this](
+            const ConfigValue &value,
+            ConfigValueType type,
+            AutoConfigItemEvent event) {
         auto proxyPanel = ProxyPanel::GetInstance();
         EngineType engineType = (EngineType) std::get<int>(value);
         this->currentEngine->hide();

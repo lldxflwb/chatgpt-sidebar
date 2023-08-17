@@ -2,8 +2,8 @@
 // Created by 陈嘉乐 on 2023/8/15.
 //
 
-#ifndef CHATGPT_SIDEBAR_LINEEDITLABEL_H
-#define CHATGPT_SIDEBAR_LINEEDITLABEL_H
+#ifndef CHATGPT_SIDEBAR_EDITLABEL_H
+#define CHATGPT_SIDEBAR_EDITLABEL_H
 
 #include <QHBoxLayout>
 #include <QLabel>
@@ -11,10 +11,10 @@
 #include <QWidget>
 #include "utils/AutoConfigQt/AutoConfigItemQt.h"
 
-class LineEditLabel : public QHBoxLayout{
+class EditLabel : public QHBoxLayout{
 public:
     AutoConfigItemQt * value;
-    LineEditLabel(const QString& keyText, const QString& valueText, QWidget *parent = nullptr);
+    EditLabel(const QString& keyText, const QString& valueText, QWidget *parent = nullptr);
     QString getValueContent();
     void setValueContent(const QString& content);
 
@@ -29,4 +29,4 @@ private:
 };
 
 
-#endif //CHATGPT_SIDEBAR_LINEEDITLABEL_H
+#endif //CHATGPT_SIDEBAR_EDITLABEL_H

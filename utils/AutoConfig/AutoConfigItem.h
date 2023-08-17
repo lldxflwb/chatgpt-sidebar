@@ -13,16 +13,22 @@
 #include <vector>
 #include "nlohmann/json.hpp"
 
-using ConfigValue = std::variant<int, double, std::string>;
+using ConfigValue = std::variant<int, double, std::string,nlohmann::json>;
 
 enum ConfigValueType {
     Undefined,
     Int,
     Double,
-    String
+    String,
+    Json
 };
 
-typedef Publisher<const ConfigValue &, ConfigValueType> AutoConfigItemPublisher;
+enum class AutoConfigItemEvent{
+    ValueChanged,
+    NodeBeDeleted
+};
+
+typedef Publisher<const ConfigValue &, ConfigValueType,AutoConfigItemEvent> AutoConfigItemPublisher;
 
 
 class AutoConfigItem : public AutoConfigItemPublisher{
@@ -37,6 +43,7 @@ public:
     virtual void setString(const std::string& newValue);
     virtual void setInt(int newValue);
     virtual void setDouble(double newValue);
+    virtual void setJson(nlohmann::json j);
     virtual std::pair<ConfigValueType, const ConfigValue> getValueAsPair() const;
     virtual ConfigValue getValue() const;
     // 序列化 反序列化

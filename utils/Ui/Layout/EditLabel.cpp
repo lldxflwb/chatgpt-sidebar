@@ -2,23 +2,24 @@
 // Created by 陈嘉乐 on 2023/8/15.
 //
 
-#include "LineEditLabel.h"
+#include "EditLabel.h"
 
-LineEditLabel::LineEditLabel(const QString& keyText, const QString& valueText, QWidget *parent)
+EditLabel::EditLabel(const QString& keyText, const QString& valueText, QWidget *parent)
         : QHBoxLayout(parent) {
-    keyLabel = new QLabel(keyText, parent);
     valueLabel = new QLabel(valueText, parent);
     valueEdit = new QLineEdit(valueText, parent);
     valueEdit->hide(); // 默认隐藏编辑框
-    this->addWidget(keyLabel);
     this->addWidget(valueLabel);
     this->addWidget(valueEdit);
 
-    connect(valueLabel, &QLabel::linkActivated, this, &LineEditLabel::labelClicked);
-    connect(valueEdit, &QLineEdit::editingFinished, this, &LineEditLabel::finishEditing);
+    connect(valueLabel, &QLabel::linkActivated, this, &EditLabel::labelClicked);
+    connect(valueEdit, &QLineEdit::editingFinished, this, &EditLabel::finishEditing);
 
     this->value=static_cast<AutoConfigItemQt*>(value);
-    this->value->RegisterObserver([=](const ConfigValue &value,ConfigValueType type) {
+    this->value->RegisterObserver([=](
+            const ConfigValue &value,
+            ConfigValueType type,
+            AutoConfigItemEvent event) {
         qDebug() << "value changed" << std::get<std::string>(value);
         std::string currValue = std::get<std::string>(value);
         this->valueLabel->setText(QString::fromStdString(currValue));
@@ -26,24 +27,24 @@ LineEditLabel::LineEditLabel(const QString& keyText, const QString& valueText, Q
     });
 }
 
-void LineEditLabel::labelClicked() {
+void EditLabel::labelClicked() {
     valueLabel->hide();
     valueEdit->show();
     valueEdit->setFocus();
     this->value->setValue(this->valueEdit->text());
 }
 
-void LineEditLabel::finishEditing() {
+void EditLabel::finishEditing() {
     valueLabel->setText(valueEdit->text());
     valueLabel->show();
     valueEdit->hide();
 }
 
-QString LineEditLabel::getValueContent() {
+QString EditLabel::getValueContent() {
     return valueLabel->text();
 }
 
-void LineEditLabel::setValueContent(const QString& content) {
+void EditLabel::setValueContent(const QString& content) {
     valueLabel->setText(content);
 }
 

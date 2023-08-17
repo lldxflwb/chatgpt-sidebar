@@ -8,7 +8,7 @@ void AutoConfigItem::setValue(std::pair<ConfigValueType, ConfigValue> newValue) 
     if (value != newValue.second) {
         value = newValue.second;
         type = newValue.first;
-        Notify(newValue.second, this->type);
+        Notify(newValue.second, this->type,AutoConfigItemEvent::ValueChanged);
     }
 }
 
@@ -34,11 +34,21 @@ void AutoConfigItem::setString(const std::string &newValue) {
 }
 
 void AutoConfigItem::setInt(int newValue) {
-    setValue(std::make_pair(ConfigValueType::Int, newValue));
+    ConfigValue v ;
+    v = newValue;
+    setValue(std::make_pair(ConfigValueType::Int, v));
 }
 
 void AutoConfigItem::setDouble(double newValue) {
-    setValue(std::make_pair(ConfigValueType::Double, newValue));
+    ConfigValue v;
+    v = newValue;
+    setValue(std::make_pair(ConfigValueType::Double, v));
+}
+
+void AutoConfigItem::setJson(nlohmann::json j) {
+    ConfigValue v;
+    v = j;
+    setValue(std::make_pair(ConfigValueType::Json, v));
 }
 
 std::pair<ConfigValueType, const ConfigValue> AutoConfigItem::getValueAsPair() const {
@@ -75,11 +85,11 @@ void AutoConfigItem::fromJson(nlohmann::json & item,std::string key) {
     }
     auto value = item[key];
     if (value.is_number_integer()) {
-        this->setValue(std::make_pair(ConfigValueType::Int, value.get<int>()));
+        this->setInt(value.get<int>());
     } else if (value.is_number_float()) {
-        this->setValue(std::make_pair(ConfigValueType::Double, value.get<double>()));
+        this->setDouble(value.get<double>());
     } else if (value.is_string()) {
-        this->setValue(std::make_pair(ConfigValueType::String, value.get<std::string>()));
+        this->setString(value.get<std::string>());
     }
     else{
         throw std::runtime_error(key + " is not a valid type");

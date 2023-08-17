@@ -8,5 +8,7 @@
 #include "LabelLabel.h"
 #include "LabelEditLine.h"
 #include "LabelComboBox.h"
+#include "DestoryLine.h"
+#include "EditLabel.h"
 
 #endif //CHATGPT_SIDEBAR_UIIMPORT_H

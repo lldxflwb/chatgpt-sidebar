@@ -26,7 +26,10 @@ LabelComboBox::LabelComboBox(
         this->ChangeValue = number;
         this->value->setInt(number);
     });
-    this->value->RegisterObserver([=](const ConfigValue &value,ConfigValueType type) {
+    this->value->RegisterObserver([=](
+            const ConfigValue &value,
+            ConfigValueType type,
+            AutoConfigItemEvent event) {
         qDebug() << "value changed" << std::get<int>(value);
         int currValue = std::get<int>(value);
         if (this->ChangeValue != currValue) {

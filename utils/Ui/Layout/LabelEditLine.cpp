@@ -29,7 +29,10 @@ LabelEditLine::LabelEditLine(
         this->ChangeValue = text.toStdString();
         this->value->setValue(text);
     });
-    this->value->RegisterObserver([=](const ConfigValue &value,ConfigValueType type) {
+    this->value->RegisterObserver([=](
+            const ConfigValue &value,
+            ConfigValueType type,
+            AutoConfigItemEvent event) {
         qDebug() << "value changed" << std::get<std::string>(value);
         std::string currValue = std::get<std::string>(value);
         if (this->ChangeValue != currValue) {

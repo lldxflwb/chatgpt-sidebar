@@ -245,7 +245,10 @@ void AutoConfig::EventDeal(ConfigEvent configEvent) {
 }
 
 AutoConfigItem *AutoConfig::addItems(const std::string &key, AutoConfigItem *item) {
-    item->RegisterObserver([this,item](const ConfigValue &newValue,ConfigValueType type) {
+    item->RegisterObserver([this,item](
+            const ConfigValue &newValue,
+            ConfigValueType type,
+            AutoConfigItemEvent event) {
         this->valueChange();
     });
     auto * currItem = new AutoConfigItem(*item);

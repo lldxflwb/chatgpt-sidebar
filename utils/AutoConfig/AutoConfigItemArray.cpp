@@ -11,7 +11,10 @@ AutoConfigItemArray::AutoConfigItemArray(ConfigValueType type) : type(type){
 AutoConfigItem *AutoConfigItemArray::addItem(AutoConfigItem *item) {
     if(item && (observers.find(item) == observers.end() || observers[item] != -1)){
         items.push_back(item);
-        auto id= item->RegisterObserver([this](const ConfigValue & item, ConfigValueType t) {
+        auto id= item->RegisterObserver([this](
+                const ConfigValue & item,
+                ConfigValueType t,
+                AutoConfigItemEvent event) {
             this->Notify(
                 this,
                 this->getItem(item),
