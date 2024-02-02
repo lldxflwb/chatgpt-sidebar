@@ -12,7 +12,8 @@
 #include "ProxyPanel.h"
 enum EngineType{
     Baidu,
-    ChatGpt
+    ChatGpt,
+    Zhipu
 };
 class EnginePanel : public ConfigQWidget{
     std::map<EngineType,ConfigQWidget*> engineConfigMap;

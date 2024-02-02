@@ -7,6 +7,8 @@
 #include "utils/MySetting/KeyInfo/ChatGptKey.h"
 #include "ChatEngine/BaiduEngine/BaiduEngine.h"
 #include "ChatEngine/ChatGptEngine/OpenAiEngine.h"
+#include "ChatEngine/ZhiPu/ZhiPuEngine.h"
+#include "utils/MySetting/KeyInfo/ZhipuKey.h"
 #include <QTextEdit>
 extern AutoConfig::StoragePolicy storagePolicy;
 extern QTextEdit * outPutTextArea;
@@ -26,12 +28,16 @@ EnginePanel::EnginePanel(
     this->engineConfigMap[EngineType::ChatGpt] = new ChatGptKey("");
     this->engineMap[EngineType::ChatGpt] = new OpenAiEngine();
     this->engineConfigMap[EngineType::ChatGpt]->RegisterFatherConfig(autoConfigQt);
+    this->engineMap[EngineType::Zhipu] = new ZhiPuEngine();
+    this->engineConfigMap[EngineType::Zhipu] = new ZhipuKey("");
+    this->engineConfigMap[EngineType::Zhipu]->RegisterFatherConfig(autoConfigQt);
     this->engineTypeValue = engineType;
     this->currentEngine = this->engineConfigMap[engineType];
     this->engineType =
             new LabelComboBox("engineType",
                               {
                                         {"文心一言",EngineType::Baidu},
+                                        {"智谱清言",EngineType::Zhipu},
                                         {"ChatGpt3.5",EngineType::ChatGpt}
                 },
                               engineTypeItem,
@@ -40,6 +46,7 @@ EnginePanel::EnginePanel(
     this->layout->addLayout(this->engineType);
     this->layout->addWidget(this->engineConfigMap[EngineType::Baidu]);
     this->layout->addWidget(this->engineConfigMap[EngineType::ChatGpt]);
+    this->layout->addWidget(this->engineConfigMap[EngineType::Zhipu]);
     this->currentEngine->show();
     this->setLayout(this->layout);
     if(  ProxyPanel::GetInstance()->currentProxy && EngineType::ChatGpt != engineType){
