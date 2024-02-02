@@ -13,7 +13,7 @@
 #include <QDebug>
 #include <QUrlQuery>
 #include <QMessageAuthenticationCode>
-#include "jwt-cpp/jwt.h"
+//#include "jwt-cpp/jwt.h"
 
 extern AutoConfig * zhipuConfig;
 extern QNetworkAccessManager * networkManager;
@@ -29,72 +29,72 @@ QString base64UrlEncode(const QByteArray &data) {
 QByteArray hmacSha256(const QByteArray &key, const QByteArray &data) {
     return QMessageAuthenticationCode::hash(data, key, QCryptographicHash::Sha256);
 }
-
-QString generateJwtToken(const QString &apiKey, int expSeconds,QJsonObject & payloadObj,QByteArray &payloadEncoded ) {
-    QStringList parts = apiKey.split('.');
-    if (parts.length() != 2) {
-        qDebug() << "API key format is invalid";
-        return "";
-    }
-    QString id = parts[0];
-    QString secret = parts[1];
-
-    // Header
-    QJsonObject headerObj{{"alg", "HS256"}, {"sign_type", "SIGN"}};
-    QByteArray headerEncoded = base64UrlEncode(QJsonDocument(headerObj).toJson(QJsonDocument::Compact)).toUtf8();
-
-    // Payload
-    qint64 currentTimeMs = QDateTime::currentMSecsSinceEpoch();
-    payloadObj["api_key"] = id;
-    payloadObj["exp"] = currentTimeMs + static_cast<qint64>(expSeconds) * 1000;
-    payloadObj["timestamp"] = currentTimeMs;
-
-    payloadEncoded = base64UrlEncode(QJsonDocument(payloadObj).toJson(QJsonDocument::Compact)).toUtf8();
-
-    // Signature
-    QByteArray toSign = headerEncoded + "." + payloadEncoded;
-    QByteArray signature = hmacSha256(secret.toUtf8(), toSign);
-    QString signatureEncoded = base64UrlEncode(signature);
-
-    // Assemble JWT
-    QString jwt = headerEncoded + "." + payloadEncoded + "." + signatureEncoded;
-    return jwt;
-}
-#include <QString>
-#include <QDateTime>
-#include <jwt-cpp/jwt.h>
-
-std::string generate_token(const QString& apikey, int exp_seconds) {
-    // 将QString转换为std::string
-    auto apikey_std = apikey.toStdString();
-    size_t pos = apikey_std.find(".");
-    if(pos == std::string::npos) {
-        throw std::runtime_error("invalid apikey");
-    }
-
-    std::string id = apikey_std.substr(0, pos);
-    std::string secret = apikey_std.substr(pos + 1);
-
-    // 构造payload
-    auto now = std::chrono::system_clock::now();
-    auto exp = now + std::chrono::seconds(exp_seconds);
-    // real use is in milliseconds , in string
-    auto now_ms = std::to_string(std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count());
-    auto exp_ms = std::to_string(std::chrono::duration_cast<std::chrono::milliseconds>(exp.time_since_epoch()).count());
-    // 生成并返回JWT令牌
-    std::string alg = "HS256";
-    std::string sign_type = "SIGN";
-    auto token = jwt::create()
-            .set_payload_claim("api_key", jwt::claim(id))
-            .set_payload_claim("exp", jwt::claim(exp_ms))
-            .set_payload_claim("timestamp", jwt::claim(now_ms))
-            .set_issued_at(std::chrono::system_clock::now()) // 签发时间
-            .set_expires_at(std::chrono::system_clock::now() + std::chrono::seconds(3600)) // 过期时间
-            .set_header_claim("alg", jwt::claim(alg))
-            .set_header_claim("sign_type", jwt::claim(sign_type))
-            .sign(jwt::algorithm::hs256{secret});
-    return token;
-}
+//
+//QString generateJwtToken(const QString &apiKey, int expSeconds,QJsonObject & payloadObj,QByteArray &payloadEncoded ) {
+//    QStringList parts = apiKey.split('.');
+//    if (parts.length() != 2) {
+//        qDebug() << "API key format is invalid";
+//        return "";
+//    }
+//    QString id = parts[0];
+//    QString secret = parts[1];
+//
+//    // Header
+//    QJsonObject headerObj{{"alg", "HS256"}, {"sign_type", "SIGN"}};
+//    QByteArray headerEncoded = base64UrlEncode(QJsonDocument(headerObj).toJson(QJsonDocument::Compact)).toUtf8();
+//
+//    // Payload
+//    qint64 currentTimeMs = QDateTime::currentMSecsSinceEpoch();
+//    payloadObj["api_key"] = id;
+//    payloadObj["exp"] = currentTimeMs + static_cast<qint64>(expSeconds) * 1000;
+//    payloadObj["timestamp"] = currentTimeMs;
+//
+//    payloadEncoded = base64UrlEncode(QJsonDocument(payloadObj).toJson(QJsonDocument::Compact)).toUtf8();
+//
+//    // Signature
+//    QByteArray toSign = headerEncoded + "." + payloadEncoded;
+//    QByteArray signature = hmacSha256(secret.toUtf8(), toSign);
+//    QString signatureEncoded = base64UrlEncode(signature);
+//
+//    // Assemble JWT
+//    QString jwt = headerEncoded + "." + payloadEncoded + "." + signatureEncoded;
+//    return jwt;
+//}
+//#include <QString>
+//#include <QDateTime>
+//#include <jwt-cpp/jwt.h>
+//
+//std::string generate_token(const QString& apikey, int exp_seconds) {
+//    // 将QString转换为std::string
+//    auto apikey_std = apikey.toStdString();
+//    size_t pos = apikey_std.find(".");
+//    if(pos == std::string::npos) {
+//        throw std::runtime_error("invalid apikey");
+//    }
+//
+//    std::string id = apikey_std.substr(0, pos);
+//    std::string secret = apikey_std.substr(pos + 1);
+//
+//    // 构造payload
+//    auto now = std::chrono::system_clock::now();
+//    auto exp = now + std::chrono::seconds(exp_seconds);
+//    // real use is in milliseconds , in string
+//    auto now_ms = std::to_string(std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count());
+//    auto exp_ms = std::to_string(std::chrono::duration_cast<std::chrono::milliseconds>(exp.time_since_epoch()).count());
+//    // 生成并返回JWT令牌
+//    std::string alg = "HS256";
+//    std::string sign_type = "SIGN";
+//    auto token = jwt::create()
+//            .set_payload_claim("api_key", jwt::claim(id))
+//            .set_payload_claim("exp", jwt::claim(exp_ms))
+//            .set_payload_claim("timestamp", jwt::claim(now_ms))
+//            .set_issued_at(std::chrono::system_clock::now()) // 签发时间
+//            .set_expires_at(std::chrono::system_clock::now() + std::chrono::seconds(3600)) // 过期时间
+//            .set_header_claim("alg", jwt::claim(alg))
+//            .set_header_claim("sign_type", jwt::claim(sign_type))
+//            .sign(jwt::algorithm::hs256{secret});
+//    return token;
+//}
 
 void ZhiPuEngine::OnInput(const QString &input) {
     this->Notify("",ApiStatus::start);
